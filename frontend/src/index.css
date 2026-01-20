@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+/* Hide default show/hide password icon in Chrome/Edge */
+@layer utilities {
+  input[type="password"]::-ms-reveal,
+  input[type="password"]::-ms-clear,
+  input[type="password"]::-webkit-textfield-decoration-container {
+    display: none !important;
+  }
+}
+
+/* Hide scrollbar category card */
+*{
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge old versions */
+}
+
+::-webkit-scrollbar,
+::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
