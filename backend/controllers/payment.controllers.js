@@ -10,43 +10,35 @@ export const initiateEsewaPayment = async (req, res) => {
     try {
         const { orderId } = req.body;
 
-        // Find the order
         const order = await Order.findById(orderId);
         if (!order) {
             return res.status(404).json({ message: "Order not found" });
         }
 
-        // Verify the order belongs to the user
         if (order.user.toString() !== req.userId) {
             return res.status(403).json({ message: "Unauthorized access to order" });
         }
 
-        // Check if payment method is online
         if (order.paymentMethod !== "online") {
             return res.status(400).json({ message: "Order payment method is not online" });
         }
 
-        // Generate unique transaction UUID
         const transactionUuid = crypto.randomUUID();
 
         // Update order with transaction ID
         order.payment.transactionId = transactionUuid;
+        order.markModified('payment'); // Ensure mongoose detects the change
         await order.save();
 
-        // Prepare eSewa payment parameters
         const totalAmount = order.totalAmount.toString();
         const productCode = ESEWA_MERCHANT_CODE;
-
-        // Create message for signature: total_amount,transaction_uuid,product_code
         const message = `total_amount=${totalAmount},transaction_uuid=${transactionUuid},product_code=${productCode}`;
 
-        // Generate HMAC SHA256 signature
         const signature = crypto
             .createHmac("sha256", ESEWA_SECRET_KEY)
             .update(message)
             .digest("base64");
 
-        // Return payment data for frontend
         return res.status(200).json({
             success: true,
             paymentData: {
@@ -78,9 +70,10 @@ export const verifyEsewaPayment = async (req, res) => {
             return res.status(400).json({ message: "Payment data not provided" });
         }
 
-        // Decode the base64 data from eSewa
         const decodedData = Buffer.from(data, "base64").toString("utf-8");
         const paymentInfo = JSON.parse(decodedData);
+
+        console.log("eSewa Payment Info:", paymentInfo); // Debug log
 
         const {
             transaction_code,
@@ -92,7 +85,6 @@ export const verifyEsewaPayment = async (req, res) => {
             signature
         } = paymentInfo;
 
-        // Verify signature
         const message = `transaction_code=${transaction_code},status=${status},total_amount=${total_amount},transaction_uuid=${transaction_uuid},product_code=${product_code},signed_field_names=${signed_field_names}`;
 
         const expectedSignature = crypto
@@ -101,17 +93,16 @@ export const verifyEsewaPayment = async (req, res) => {
             .digest("base64");
 
         if (signature !== expectedSignature) {
+            console.error("Signature mismatch:", { received: signature, expected: expectedSignature });
             return res.status(400).json({ message: "Invalid payment signature" });
         }
 
-        // Find order by transaction UUID
         const order = await Order.findOne({ "payment.transactionId": transaction_uuid });
 
         if (!order) {
             return res.status(404).json({ message: "Order not found" });
         }
 
-        // Update payment status based on eSewa response
         if (status === "COMPLETE") {
             order.payment.status = "completed";
             order.payment.esewaRefId = transaction_code;
@@ -120,9 +111,9 @@ export const verifyEsewaPayment = async (req, res) => {
             order.payment.status = "failed";
         }
 
+        order.markModified('payment');
         await order.save();
 
-        // Redirect to success page with order ID
         return res.redirect(`${process.env.FRONTEND_URL}/payment-success?orderId=${order._id}`);
 
     } catch (error) {
