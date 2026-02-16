@@ -39,7 +39,15 @@ function App() {
   useGetMyOrders(); // Custom hook to fetch Orders
   useUpdateLocation();
 
-  const { userData } = useSelector(state => state.user); // Get user data from redux store
+  const { userData, isLoading } = useSelector(state => state.user); // Get user data from redux store
+
+  if (isLoading) {
+    return (
+      <div className="h-screen flex justify-center items-center bg-[#fff9f6]">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#ff4d2d]"></div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -61,7 +69,7 @@ function App() {
         <Route path='/track-order/:orderId' element={userData ? <TrackOrderPage /> : <Navigate to={"/signin"} />} />
         <Route path='/shop/:shopId' element={userData ? <Shop /> : <Navigate to={"/signin"} />} />
         <Route path='/item/:itemId' element={userData ? <ItemDetails /> : <Navigate to={"/signin"} />} />
-        <Route path='/about-us' element={ <AboutUs /> } />
+        <Route path='/about-us' element={<AboutUs />} />
       </Routes>
       <Toaster />
     </>

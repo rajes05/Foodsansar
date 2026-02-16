@@ -31,7 +31,7 @@ export const placeOrder = async (req, res) => {
       }
 
       if (!shopId) {
-        throw new Error("shop id missing in cart item");
+        throw new Error(`shop id missing in cart item: ${JSON.stringify(item)}`);
       }
       if (!groupItemsByShop[shopId]) {
         groupItemsByShop[shopId] = [];

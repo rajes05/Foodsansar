@@ -73,8 +73,6 @@ export const verifyEsewaPayment = async (req, res) => {
         const decodedData = Buffer.from(data, "base64").toString("utf-8");
         const paymentInfo = JSON.parse(decodedData);
 
-        console.log("eSewa Payment Info:", paymentInfo); // Debug log
-
         const {
             transaction_code,
             status,
@@ -112,9 +110,10 @@ export const verifyEsewaPayment = async (req, res) => {
         }
 
         order.markModified('payment');
+        // Redirect to success page (Order Placed)
         await order.save();
 
-        return res.redirect(`${process.env.FRONTEND_URL}/payment-success?orderId=${order._id}`);
+        return res.redirect(`${process.env.FRONTEND_URL}/order-placed?orderId=${order._id}`);
 
     } catch (error) {
         console.error("Verify eSewa payment error:", error);
