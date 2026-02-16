@@ -19,8 +19,14 @@ const userSchema = new mongoose.Schema({
     },
     role:{
         type:String,
-        enum:['user','owner','deliveryBoy'], // enum means allowed values
+        enum:['user','owner','deliveryBoy', 'ADMIN'], // enum means allowed values
         required:true,
+        default: 'user'
+    },
+    status: {
+        type: String,
+        enum: ["PENDING", "APPROVED", "REJECTED"],
+        default: "APPROVED"
     }, 
     resetOtp:{
         type:String,

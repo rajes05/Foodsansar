@@ -110,9 +110,9 @@ function UserDashboard() {
         )}
         {/* *End Show Search Items  */}
 
-        <div className='w-full mt-[-180px]'>
+        {/* <div className='w-full mt-[-180px]'>
         <HeroSection/>
-        </div>
+        </div> */}
 
 
             {/* Category card  */}

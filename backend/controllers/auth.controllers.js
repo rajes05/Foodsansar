@@ -38,6 +38,10 @@ export const signUp = async (req, res) => {
             return res.status(400).json({ message: "User with this email already exists" });
         }
 
+        if (user) {
+            return res.status(400).json({ message: "User with this email already exists" });
+        }
+
         const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,}$/;
         if (!passwordRegex.test(password)) {
             return res.status(400).json({ message: "Password must be at least 6 characters long and contain at least one number and one special character" });
@@ -53,12 +57,19 @@ export const signUp = async (req, res) => {
         // Generate OTP
         const otp = Math.floor(1000 + Math.random() * 9000).toString();
 
+        // Default status: APPROVED for User, PENDING for others
+        let status = "APPROVED";
+        if (role === "owner" || role === "deliveryBoy") {
+            status = "PENDING";
+        }
+
         user = await User.create({
             fullName,
             email,
             password: hashedPassword,
             mobile,
             role,
+            status,
             resetOtp: otp,
             otpExpires: Date.now() + 5 * 60 * 1000,
             isOtpVerified: false
@@ -88,9 +99,16 @@ export const signIn = async (req, res) => {
             return res.status(400).json({ message: "User does not exist" });
         }
 
-        if (!user.isOtpVerified) {
+        // Allow ADMIN to login even if not verified (though createAdmin sets verified)
+        // Check status for all users
+        if (user.status !== "APPROVED") {
+            return res.status(403).json({ message: "Your account is pending approval or rejected." });
+        }
+
+        if (!user.isOtpVerified && user.role !== "ADMIN") {
             return res.status(400).json({ message: "Please verify your email to login" });
         }
+
         const isMatch = await bcrypt.compare(password, user.password); // compare provided password with stored hashed password
         if (!isMatch) {
             return res.status(400).json({ message: "Incorrect password" });
@@ -99,11 +117,12 @@ export const signIn = async (req, res) => {
         const token = await genToken(user._id); // generate a JWT token for the newly created user
 
         res.cookie("token", token, {
-            secure: false,
+            secure: false, // set to true if using https
             sameSite: "strict",
             maxAge: 7 * 24 * 60 * 60 * 1000,
             httpOnly: true,
-        }); // parse the token in an HTTP-only cookie
+            path: '/' // Explicitly set path to ensure consistency
+        });
 
         return res.status(200).json(user); // send back the created user as response
 
@@ -114,7 +133,16 @@ export const signIn = async (req, res) => {
 
 export const signOut = async (req, res) => {
     try {
-        res.clearCookie("token");
+        // key to clearing cookies is matching the options exactly (except maxAge)
+        // and/or force expiring it.
+        res.cookie("token", "", {
+            httpOnly: true,
+            secure: false,
+            sameSite: "strict",
+            expires: new Date(0), // Set to a past date to delete
+            path: '/' // Must match the path used when setting the cookie
+        });
+
         return res.status(200).json({ message: "Sign out Sucessful" });
     } catch (error) {
         return res.status(500).json(`Sign out error: ${error.message}`);

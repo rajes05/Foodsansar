@@ -1,58 +1,58 @@
 import Shop from "../models/shop.model.js";
 import uploadOnCloudinary from "../utils/cloudinary.js";
 
-export const createEditShop = async (req, res) => { 
+export const createEditShop = async (req, res) => {
     try {
-        const {name, city, province, address} = req.body;
+        const { name, city, province, address } = req.body;
 
         // for getting image from request
         let image;
 
         // req.file is the file uploaded by the user in the request body by multer middleware
 
-        if(req.file){
+        if (req.file) {
             // console.log(req.file)
             image = await uploadOnCloudinary(req.file.path);
         }
 
         // let to assign value to it later in Shop.create()
-        let shop = await Shop.findOne({owner:req.userId});
+        let shop = await Shop.findOne({ owner: req.userId });
 
         // create shop if not exists else update
-        if(!shop){
-            if(!image){
-                return res.status(400).json({message:"Shop image is required"});
+        if (!shop) {
+            if (!image) {
+                return res.status(400).json({ message: "Shop image is required" });
             }
-            shop = await Shop.create({  
+            shop = await Shop.create({
                 name,
                 city,
                 province,
                 address,
                 image,
-                owner:req.userId,
+                owner: req.userId,
             });
-        }else{
+        } else {
             const updatePayload = {
                 name,
                 city,
                 province,
                 address,
-                owner:req.userId,
+                owner: req.userId,
             };
 
-            if(image){
+            if (image) {
                 updatePayload.image = image;
             }
 
             shop = await Shop.findByIdAndUpdate(
                 shop._id,
                 updatePayload,
-                {new:true}
+                { new: true }
             );
         }
 
-       // populate means to get the owner details from the user model
-       // populate both owner and items
+        // populate means to get the owner details from the user model
+        // populate both owner and items
         await shop.populate("owner items");
 
         return res.status(201).json(shop); // send back the created shop as response
@@ -67,12 +67,12 @@ export const getMyShop = async (req, res) => {
         // userId is available from the isAuth middleware
         // populate means to get the owner details from the user model
 
-        const shop = await Shop.findOne({owner:req.userId}).populate("owner").populate({
-             // to sort items : latest at top
-            path:"items",
-            options:{sort:{updatedAt:-1}}
+        const shop = await Shop.findOne({ owner: req.userId }).populate("owner").populate({
+            // to sort items : latest at top
+            path: "items",
+            options: { sort: { updatedAt: -1 } }
         });
-        if(!shop){
+        if (!shop) {
             return res.status(200).json(null);
         }
         return res.status(200).json(shop);
@@ -82,22 +82,26 @@ export const getMyShop = async (req, res) => {
 
 };
 
-export const getShopByCity = async(req, res)=>{
+export const getShopByCity = async (req, res) => {
     try {
         // extracts the city value form request url parameters and store it in city variable
-        const {city} = req.params;
-        
+        const { city } = req.params;
+
         const shops = await Shop.find({
             // regex ignore uppercase and lowercase differences
-            city:{$regex:new RegExp(`^${city}$`,"i")}
-        }).populate("items");
+            city: { $regex: new RegExp(`^${city}$`, "i") }
+        }).populate("items").populate("owner");
 
-        if(!shops){
-            return res.status(400).json({message:"Shops not found"});
+        if (!shops) {
+            return res.status(400).json({ message: "Shops not found" });
         }
-        return res.status(200).json(shops);
+
+        // Filter shops where owner status is APPROVED
+        const approvedShops = shops.filter(shop => shop.owner && shop.owner.status === "APPROVED");
+
+        return res.status(200).json(approvedShops);
     } catch (error) {
-        return res.status(500).json({message:`Get Shops by city error ${error}`});
+        return res.status(500).json({ message: `Get Shops by city error ${error}` });
     }
 };
 

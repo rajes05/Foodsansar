@@ -11,6 +11,7 @@ import itemRouter from './routes/item.routes.js';
 import orderRouter from './routes/order.routes.js';
 import reviewRouter from './routes/review.route.js';
 import paymentRouter from './routes/payment.routes.js';
+import adminRouter from './routes/admin.routes.js';
 
 const app = express(); // initializes the Express application
 const port = process.env.PORT || 5000;
@@ -33,6 +34,7 @@ app.use("/api/item", itemRouter); // use the item router for routes starting wit
 app.use("/api/order", orderRouter); // use the order router for routes starting with /api/order
 app.use("/api/review", reviewRouter); // use the review router for routes starting with /api/review
 app.use("/api/payment", paymentRouter); // use the payment router for routes starting with /api/payment
+app.use("/api/admin", adminRouter); // use the admin router for routes starting with /api/admin
 
 // Connect DB first and then start the server
 connectDB().then(() => {
