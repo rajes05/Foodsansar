@@ -62,11 +62,11 @@ function CreateEditShop() {
   }
 
   return (
-    <div className='flex justify-center flex-col items-center p-6 bg-gradient-to-br from-orange-50 relative to-white min-h-screen'>
+    <div className='flex justify-center flex-col items-center p-6 bg-linear-to-br from-orange-50 relative to-white min-h-screen'>
 
       {/* Arrow round back */}
 
-      <div className='absolute top-[20px] left-[20px] z-[10] mb-[10px]' onClick={()=>navigate("/")}>
+      <div className='absolute top-5 left-5 z-10 mb-2.5' onClick={()=>navigate("/")}>
         <IoIosArrowRoundBack size={35} className='text-[#ff4d2d]'/>
 
       </div>

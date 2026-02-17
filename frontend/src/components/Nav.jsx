@@ -61,15 +61,15 @@ function Nav() {
     },[query])
 
   return (
-    <div className='w-full h-20 flex items-center justify-between md:justify-center gap-[30px] px-5 fixed top-0 z-[9999] bg-[#fff9f6] overflow-visible'>
+    <div className='w-full h-20 flex items-center justify-between md:justify-center gap-[30px] px-5 fixed top-0 z-9999 bg-[#fff9f6] overflow-visible'>
 
       {/* popup search  */}
 
-      {showSearch && userData.role == "user" && <div className='w-[90%] h-[70px] bg-white shadow-xl rounded-lg items-center gap-[20px] flex fixed top-[80px] left-[5%]'>
+      {showSearch && userData.role == "user" && <div className='w-[90%] h-[70px] bg-white shadow-xl rounded-lg items-center gap-5 flex fixed top-20 left-[5%]'>
 
         {/* location display */}
 
-        <div className='flex items-center w-[30%] overflow-hidden gap-[10px] px-[10px] border-r-[2px] border-gray-400'>
+        <div className='flex items-center w-[30%] overflow-hidden gap-2.5 px-2.5 border-r-2 border-gray-400'>
 
           <FaLocationDot size={25} className=' text-[#ff4d2d]' />
           <div className='w-[80%] truncate text-gray-600'>{currentCity}</div>
@@ -77,10 +77,10 @@ function Nav() {
 
         {/* search input */}
 
-        <div className='w-[80%] flex items-center gap-[10px]'>
+        <div className='w-[80%] flex items-center gap-2.5'>
 
           <IoIosSearch size={25} className='text-[#ff4d2d]' />
-          <input type="text" placeholder='Search delicious food...' className='px-[10px] text-gray-700 outline-0 w-full' onChange={(e)=>setQuery(e.target.value)} value={query}/>
+          <input type="text" placeholder='Search delicious food...' className='px-2.5 text-gray-700 outline-0 w-full' onChange={(e)=>setQuery(e.target.value)} value={query}/>
 
         </div>
       </div>}
@@ -95,7 +95,7 @@ function Nav() {
 
         {/* location display */}
 
-        <div className='flex items-center w-[30%] overflow-hidden gap-[10px] px-[10px] border-r-[2px] border-gray-400'>
+        <div className='flex items-center w-[30%] overflow-hidden gap-2.5 px-2.5 border-r-2 border-gray-400'>
 
           <FaLocationDot size={25} className=' text-[#ff4d2d]' />
           <div className='w-[80%] truncate text-gray-600'>{currentCity}</div>
@@ -103,10 +103,10 @@ function Nav() {
 
         {/* search input */}
 
-        <div className='w-[80%] flex items-center gap-[10px]'>
+        <div className='w-[80%] flex items-center gap-2.5'>
 
           <IoIosSearch size={25} className='text-[#ff4d2d]' />
-          <input type="text" placeholder='Search delicious food...' className='px-[10px] text-gray-700 outline-0 w-full'onChange={(e)=>setQuery(e.target.value)} value={query} />
+          <input type="text" placeholder='Search delicious food...' className='px-2.5 text-gray-700 outline-0 w-full'onChange={(e)=>setQuery(e.target.value)} value={query} />
 
         </div>
       </div>}
@@ -142,14 +142,14 @@ function Nav() {
             <div className='hidden md:flex items-center gap-2 cousor-pointer relative rounded-lg bg-[#ff4d2d]/10 text-[#ff4d2d] px-3 py-1 font-medium' onClick={() => navigate("/my-orders")}>
               <LuReceipt size={20} />
               <span>My Orders</span>
-              <span className='absolute -right-2 -top-2 text-xs fond-bold text-white bg-[#ff4d2d] rounded-full px-[6px] py-[1px]'>{myOrders.length}</span>
+              <span className='absolute -right-2 -top-2 text-xs fond-bold text-white bg-[#ff4d2d] rounded-full px-1.5 py-px'>{myOrders.length}</span>
             </div>
 
             {/* My Orders for small devices */}
 
             <div className='md:hidden flex items-center gap-2 cousor-pointer relative rounded-lg bg-[#ff4d2d]/10 text-[#ff4d2d] px-3 py-1 font-medium' onClick={() => navigate("/my-orders")}>
               <LuReceipt size={20} />
-              <span className='absolute -right-2 -top-2 text-xs fond-bold text-white bg-[#ff4d2d] rounded-full px-[6px] py-[1px]'>{myOrders.length}</span>
+              <span className='absolute -right-2 -top-2 text-xs fond-bold text-white bg-[#ff4d2d] rounded-full px-1.5 py-px'>{myOrders.length}</span>
             </div>
           </>
         ) : (
@@ -163,7 +163,7 @@ function Nav() {
               <div className='relative cursor-pointer' onClick={() => navigate("/cart")}>
 
                 <FiShoppingCart size={25} className='text-[#ff4d2d]' />
-                <span className='absolute right-[-9px] top-[-12px] text-[#ff4d2d]'>{cartItems.length}</span>
+                <span className='absolute right-[-9px] -top-3 text-[#ff4d2d]'>{cartItems.length}</span>
 
               </div>
             }
