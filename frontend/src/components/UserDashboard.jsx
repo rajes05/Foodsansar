@@ -11,6 +11,7 @@ import axios from 'axios';
 import { serverUrl } from '../App';
 import Footer from './Footer';
 import HeroSection from './HeroSection';
+import BannerSlider from './BannerSlider';
 
 
 
@@ -95,6 +96,11 @@ function UserDashboard() {
 
         <Nav/>
 
+    {/* ======= Banner Slider ========== */}
+    <div className='w-full max-w-6xl px-2.5'>
+        <BannerSlider/>
+    </div>
+    {/* ======= End Banner Slider ======== */}
 
         {/* Show Search Items  */}
         {searchItems && searchItems.length>0 && (
