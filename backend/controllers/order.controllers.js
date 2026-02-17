@@ -23,9 +23,15 @@ export const placeOrder = async (req, res) => {
     const groupItemsByShop = {};
 
     cartItems.forEach((item) => {
-      const shopId = item.shopId || item.shop;
+      let shopId = item.shopId || item.shop;
+
+      // If shopId is an object (populated shop), extract _id
+      if (typeof shopId === 'object' && shopId !== null) {
+        shopId = shopId._id || shopId.id;
+      }
+
       if (!shopId) {
-        throw new Error("shop id missing in cart item");
+        throw new Error(`shop id missing in cart item: ${JSON.stringify(item)}`);
       }
       if (!groupItemsByShop[shopId]) {
         groupItemsByShop[shopId] = [];
@@ -85,7 +91,8 @@ export const placeOrder = async (req, res) => {
 
     return res.status(201).json(newOrder);
   } catch (error) {
-    return res.status(500).json({ message: `place order error ${error}` });
+    console.error("Place Order Error:", error); // Log full error to console
+    return res.status(500).json({ message: `place order error: ${error.message}` });
   }
 };
 
