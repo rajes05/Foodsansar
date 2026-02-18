@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FaArrowLeft } from "react-icons/fa";
 import { IoLocationSharp } from "react-icons/io5";
 import { IoSearchOutline } from "react-icons/io5";
 import { TbCurrentLocation } from "react-icons/tb";
@@ -16,6 +15,7 @@ import { getCorrectCityName } from '../utils/cityDetection';
 import axios from 'axios';
 import { serverUrl } from '../App';
 import EsewaPaymentForm from '../components/EsewaPaymentForm';
+import RollBackButton from '../components/ui/RollBackButton';
 
 function RecenterMap({ location }) {
   if (location.lat && location.lon) {
@@ -160,13 +160,9 @@ function CheckOut() {
     <div className='min-h-screen bg-[#fff9f6] flex items-center justify-center p-6'>
 
       {/* ===== Rollback Button ===== */}
-      <button
-        className="fixed top-6 left-4 z-20 flex items-center gap-2 bg-white/80 hover:bg-white text-gray-800 px-4 py-2 rounded-full shadow-md transition backdrop-blur-sm"
-        onClick={() => navigate(-1)}
-      >
-        <FaArrowLeft />
-        <span>Back</span>
-      </button>
+    
+      <RollBackButton to={-1}/>
+
       {/* ===== End Rollback Button ===== */}
 
       <div className='w-full max-w-[900px] bg-white rounded-2xl shadow-xl p-6 space-y-6'>

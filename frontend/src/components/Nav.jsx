@@ -22,7 +22,7 @@ function Nav() {
   const { myShopData } = useSelector(state => state.owner);
   const [showInfo, setShowInfo] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
-  const [query, setQuery]=useState("")
+  const [query, setQuery] = useState("")
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -42,23 +42,23 @@ function Nav() {
     }
   }
 
-   const handleSearchItems=async()=>{
-      try {
-        const result=await axios.get(`${serverUrl}/api/item/search-items?query=${query}&city=${currentCity}`,{withCredentials:true})
-        dispatch(setSearchItems(result.data))
-      } catch (error) {
-        console.log(error)
-      }
+  const handleSearchItems = async () => {
+    try {
+      const result = await axios.get(`${serverUrl}/api/item/search-items?query=${query}&city=${currentCity}`, { withCredentials: true })
+      dispatch(setSearchItems(result.data))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    if (query) {
+      handleSearchItems()
+    } else {
+      dispatch(setSearchItems(null))
     }
 
-    useEffect(()=>{
-      if(query){
-        handleSearchItems()
-      }else{
-        dispatch(setSearchItems(null))
-      }
-        
-    },[query])
+  }, [query])
 
   return (
     <div className='w-full h-20 flex items-center justify-between md:justify-center gap-[30px] px-5 fixed top-0 z-9999 bg-[#fff9f6] overflow-visible'>
@@ -80,7 +80,7 @@ function Nav() {
         <div className='w-[80%] flex items-center gap-2.5'>
 
           <IoIosSearch size={25} className='text-[#ff4d2d]' />
-          <input type="text" placeholder='Search delicious food...' className='px-2.5 text-gray-700 outline-0 w-full' onChange={(e)=>setQuery(e.target.value)} value={query}/>
+          <input type="text" placeholder='Search delicious food...' className='px-2.5 text-gray-700 outline-0 w-full' onChange={(e) => setQuery(e.target.value)} value={query} />
 
         </div>
       </div>}
@@ -106,7 +106,7 @@ function Nav() {
         <div className='w-[80%] flex items-center gap-2.5'>
 
           <IoIosSearch size={25} className='text-[#ff4d2d]' />
-          <input type="text" placeholder='Search delicious food...' className='px-2.5 text-gray-700 outline-0 w-full'onChange={(e)=>setQuery(e.target.value)} value={query} />
+          <input type="text" placeholder='Search delicious food...' className='px-2.5 text-gray-700 outline-0 w-full' onChange={(e) => setQuery(e.target.value)} value={query} />
 
         </div>
       </div>}
@@ -139,7 +139,7 @@ function Nav() {
 
             {/* My Orders for large devices */}
 
-            <div className='hidden md:flex items-center gap-2 cousor-pointer relative rounded-lg bg-[#ff4d2d]/10 text-[#ff4d2d] px-3 py-1 font-medium' onClick={() => navigate("/my-orders")}>
+            <div className='hidden md:flex items-center gap-2 cursor-pointer relative rounded-lg bg-[#ff4d2d]/10 text-[#ff4d2d] px-3 py-1 font-medium' onClick={() => navigate("/my-orders")}>
               <LuReceipt size={20} />
               <span>My Orders</span>
               <span className='absolute -right-2 -top-2 text-xs fond-bold text-white bg-[#ff4d2d] rounded-full px-1.5 py-px'>{myOrders.length}</span>
@@ -147,7 +147,7 @@ function Nav() {
 
             {/* My Orders for small devices */}
 
-            <div className='md:hidden flex items-center gap-2 cousor-pointer relative rounded-lg bg-[#ff4d2d]/10 text-[#ff4d2d] px-3 py-1 font-medium' onClick={() => navigate("/my-orders")}>
+            <div className='md:hidden flex items-center gap-2 cursor-pointer relative rounded-lg bg-[#ff4d2d]/10 text-[#ff4d2d] px-3 py-1 font-medium' onClick={() => navigate("/my-orders")}>
               <LuReceipt size={20} />
               <span className='absolute -right-2 -top-2 text-xs fond-bold text-white bg-[#ff4d2d] rounded-full px-1.5 py-px'>{myOrders.length}</span>
             </div>
@@ -188,7 +188,7 @@ function Nav() {
 
         {/* popup profile*/}
         {showInfo &&
-          <div className={`fixed top-20 right-2.5 ${userData.role=="deliveryBoy"?"md:right-[20%] lg:right-[40%]":"md:right-[10%] lg:right-[25%]"}  w-[180px] bg-white shadow-2xl rounded-xl p-5 flex flex-col gap-2.5 z-9999`}>
+          <div className={`fixed top-20 right-2.5 ${userData.role == "deliveryBoy" ? "md:right-[20%] lg:right-[40%]" : "md:right-[10%] lg:right-[25%]"}  w-[180px] bg-white shadow-2xl rounded-xl p-5 flex flex-col gap-2.5 z-9999`}>
 
             <div className='text-[17px] font-semibold'>{userData.fullName}</div>
 

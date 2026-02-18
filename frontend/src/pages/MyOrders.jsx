@@ -1,11 +1,10 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { IoIosArrowRoundBack } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
 import UserOrderCard from '../components/UserOrderCard';
 import OwnerOrderCard from '../components/OwnerOrderCard';
-import { FaArrowLeft } from "react-icons/fa";
 import Footer from '../components/Footer';
+import RollBackButton from '../components/ui/RollBackButton';
 
 
 
@@ -23,14 +22,9 @@ function MyOrders() {
         <div className='flex items-center justify-center gap-5 mb-6 '>
 
           {/* ===== Rollback Button ===== */}
-          <button
-            className="fixed top-6 left-4 z-20 flex items-center gap-2 bg-white/80 hover:bg-white text-gray-800 px-4 py-2 rounded-full shadow-md transition backdrop-blur-sm"
-            onClick={() => navigate("/")}
-          >
-            <FaArrowLeft />
-            <span>Back</span>
-          </button>
+            <RollBackButton to="/" />
           {/* ===== End Rollback Button ===== */}
+
           <h1 className='text-2xl font-bold text-center'>My Orders</h1>
 
         </div>
