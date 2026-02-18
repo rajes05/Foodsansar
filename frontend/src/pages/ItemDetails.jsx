@@ -842,7 +842,6 @@ function ItemDetails() {
                     style={{
                         background: "white",
                         borderRadius: 2,
-                        marginTop: 8,
                         boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
                         overflow: "hidden",
                         marginTop: '60px' 
@@ -1403,20 +1402,6 @@ function ItemDetails() {
                 </div>
                 {/* ============ END RECOMMENDATIONS SECTION ============ */}
 
-                {/* Back button bottom */}
-                {/* <div style={{ marginTop: 16, display: 'flex' }}>
-                    <button
-                        onClick={() => navigate(-1)}
-                        style={{
-                            display: 'flex', alignItems: 'center', gap: 8,
-                            background: 'white', border: '1px solid #e0e0e0',
-                            color: '#555', fontWeight: 700, fontSize: 13,
-                            padding: '10px 18px', borderRadius: 2, cursor: 'pointer'
-                        }}
-                    >
-                        <FaArrowLeft size={12} /> Back to Listings
-                    </button>
-                </div> */}
             </div>
             <Footer />
         </div>
