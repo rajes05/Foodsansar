@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { IoIosArrowRoundBack } from "react-icons/io";
+import { FaArrowLeft } from "react-icons/fa";
 import { IoLocationSharp } from "react-icons/io5";
 import { IoSearchOutline } from "react-icons/io5";
 import { TbCurrentLocation } from "react-icons/tb";
@@ -159,11 +159,15 @@ function CheckOut() {
   return (
     <div className='min-h-screen bg-[#fff9f6] flex items-center justify-center p-6'>
 
-      {/* Arrow round back  */}
-      <div className='absolute top-5 left-5 z-10' onClick={() => navigate("/cart")}>
-        <IoIosArrowRoundBack size={35} className='text-[#ff4d2d]' />
-      </div>
-      {/* *End arrow round back  */}
+      {/* ===== Rollback Button ===== */}
+      <button
+        className="fixed top-6 left-4 z-20 flex items-center gap-2 bg-white/80 hover:bg-white text-gray-800 px-4 py-2 rounded-full shadow-md transition backdrop-blur-sm"
+        onClick={() => navigate(-1)}
+      >
+        <FaArrowLeft />
+        <span>Back</span>
+      </button>
+      {/* ===== End Rollback Button ===== */}
 
       <div className='w-full max-w-[900px] bg-white rounded-2xl shadow-xl p-6 space-y-6'>
         <h1 className='text-2xl font-bold text-gray-800'>Checkout</h1>

@@ -22,15 +22,15 @@ function MyOrders() {
         {/* My Orders Header Div*/}
         <div className='flex items-center justify-center gap-5 mb-6 '>
 
-          {/* Back Button */}
+          {/* ===== Rollback Button ===== */}
           <button
             className="fixed top-6 left-4 z-20 flex items-center gap-2 bg-white/80 hover:bg-white text-gray-800 px-4 py-2 rounded-full shadow-md transition backdrop-blur-sm"
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/")}
           >
             <FaArrowLeft />
             <span>Back</span>
           </button>
-
+          {/* ===== End Rollback Button ===== */}
           <h1 className='text-2xl font-bold text-center'>My Orders</h1>
 
         </div>
