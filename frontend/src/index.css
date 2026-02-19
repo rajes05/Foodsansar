@@ -19,3 +19,15 @@
 ::-webkit-scrollbar {
   display: none; /* Chrome, Safari and Opera */
 }
+
+/* slideDown alimation for search bar and popup profile */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

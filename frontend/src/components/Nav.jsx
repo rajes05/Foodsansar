@@ -63,7 +63,8 @@ function Nav() {
     <div className='w-full h-20 flex items-center justify-between md:justify-center gap-[30px] px-5 fixed top-0 z-9999 bg-[#fff9f6] overflow-visible'>
 
       {/* ===== popup search ====== */}
-      {showSearch && userData.role == "user" && <div className='w-[90%] h-[70px] bg-white shadow-xl rounded-lg items-center gap-5 flex fixed top-20 left-[5%]'>
+      {showSearch && userData.role == "user" && 
+      <div className='w-[90%] h-[70px] bg-white shadow-xl rounded-lg items-center gap-5 flex fixed top-20 left-[5%] animate-[slideDown_0.5s_ease-out]'>
 
         {/* location display */}
 
@@ -120,8 +121,8 @@ function Nav() {
 
         {/* search icon and cross  for small devices */}
 
-        {userData.role == "user" && (showSearch ? <RxCross2 size={25} className='text-[#ff4d2d] md:hidden' onClick={() => setShowSearch(false)} /> :
-          <IoIosSearch size={25} className='text-[#ff4d2d] md:hidden' onClick={() => setShowSearch(true)} />)}
+        {userData.role == "user" && (showSearch ? <RxCross2 size={25} className='text-[#ff4d2d] md:hidden cursor-pointer' onClick={() => setShowSearch(false)} /> :
+          <IoIosSearch size={25} className='text-[#ff4d2d] md:hidden cursor-pointer' onClick={() => setShowSearch(true)} />)}
 
         {/* Right Nav component */}
 
@@ -201,7 +202,7 @@ function Nav() {
 
           {/* ==== popup profile ==== */}
           {showInfo &&
-            <div className={`absolute top-12 right-0 ${userData.role == "deliveryBoy" ? "md:right-[20%] lg:right-[40%]" : "md:right-[10%] lg:right-[25%]"}  w-[180px] bg-white shadow-2xl rounded-xl p-5 flex flex-col gap-2.5 z-9999`}>
+            <div className={`absolute top-12 right-0 ${userData.role == "deliveryBoy" ? "md:right-[20%] lg:right-[40%]" : "md:right-[10%] lg:right-[25%]"}  w-[180px] bg-white shadow-2xl rounded-xl p-5 flex flex-col gap-2.5 z-9999 animate-[slideDown_0.5s_ease-out]`}>
 
               <div className='text-[17px] font-semibold'>{userData.fullName}</div>
 
