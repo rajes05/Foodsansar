@@ -10,8 +10,7 @@ import { setSearchItems, setUserData } from '../redux/userSlice';
 import { FaPlus } from "react-icons/fa";
 import { LuReceipt } from "react-icons/lu";
 import { useNavigate } from 'react-router-dom';
-
-
+import Logo from '../../public/combination_mark.png';
 
 
 function Nav() {
@@ -63,8 +62,7 @@ function Nav() {
   return (
     <div className='w-full h-20 flex items-center justify-between md:justify-center gap-[30px] px-5 fixed top-0 z-9999 bg-[#fff9f6] overflow-visible'>
 
-      {/* popup search  */}
-
+      {/* ===== popup search ====== */}
       {showSearch && userData.role == "user" && <div className='w-[90%] h-[70px] bg-white shadow-xl rounded-lg items-center gap-5 flex fixed top-20 left-[5%]'>
 
         {/* location display */}
@@ -84,13 +82,14 @@ function Nav() {
 
         </div>
       </div>}
+      {/* ===== end popup search ===== */}
 
-      {/* *end popup search */}
+        {/* ===== LOGO ===== */}
+      {/* <h1 className='text-3xl font-bold mb-2 text-[#ff4d2d]'>FoodSansar</h1> */}
+      <img src={Logo} alt="FoodSansar" className='h-12 md:h-14 mb-2 object-contain'/>
+      {/* ===== END OF LOGO ===== */}
 
-      <h1 className='text-3xl font-bold mb-2 text-[#ff4d2d]'>FoodSansar</h1>
-
-      {/* mid nav section */}
-
+      {/* ====== mid nav section ====== */}
       {userData.role == "user" && <div className='md:w-[60%] lg:w-[40%] h-[70px] bg-white shadow-xl rounded-lg items-center gap-5 hidden md:flex'>
 
         {/* location display */}
@@ -110,11 +109,9 @@ function Nav() {
 
         </div>
       </div>}
+      {/* ===== end mid nav section ===== */}
 
-      {/* *end mid nav section */}
-
-      {/* right nav section */}
-
+      {/* ===== right nav section ===== */}
       <div className='flex items-center gap-4'>
 
         {/* search icon and cross  for small devices */}
@@ -204,8 +201,7 @@ function Nav() {
         {/* *End Popup Profile  */}
 
       </div>
-
-      {/* *end right nav section */}
+      {/* ===== end right nav section ===== */}
 
     </div>
   );
