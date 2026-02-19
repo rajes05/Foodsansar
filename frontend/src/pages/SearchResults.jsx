@@ -313,7 +313,7 @@ function SearchResults() {
         <div className='flex gap-5 items-start'>
 
           {/* ── Sidebar — desktop ── */}
-          <aside className='hidden sm:flex flex-col gap-5 w-56 lg:w-64 flex-shrink-0 bg-white rounded-2xl p-5 shadow-sm sticky top-24'>
+          <aside className='hidden sm:flex flex-col gap-5 w-56 lg:w-64 shrink-0 bg-white rounded-2xl p-5 shadow-sm sticky top-24'>
             <div className='flex items-center gap-2 pb-2 border-b border-gray-100'>
               <FiFilter size={15} style={{ color: PRIMARY }} />
               <span className='font-bold text-gray-800 text-sm'>Filters</span>
@@ -329,7 +329,7 @@ function SearchResults() {
 
           {/* ── Mobile sidebar overlay ── */}
           {mobileSidebar && (
-            <div className='fixed inset-0 z-[9999] flex sm:hidden'>
+            <div className='fixed inset-0 z-9999 flex sm:hidden'>
               {/* backdrop */}
               <div className='absolute inset-0 bg-black/40 backdrop-blur-sm' onClick={() => setMobileSidebar(false)} />
               {/* drawer */}
@@ -411,7 +411,7 @@ function SearchResults() {
             <span
               key={c}
               onClick={() => toggleCat(c)}
-              className='flex-shrink-0 flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full cursor-pointer'
+              className='shrink-0 flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full cursor-pointer'
               style={{ background: `${PRIMARY}15`, color: PRIMARY }}
             >
               {c} <FiX size={11} />
@@ -420,7 +420,7 @@ function SearchResults() {
           {sort !== 'relevance' && (
             <span
               onClick={() => setSort('relevance')}
-              className='flex-shrink-0 flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full cursor-pointer'
+              className='shrink-0 flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full cursor-pointer'
               style={{ background: `${ACCENT}15`, color: ACCENT }}
             >
               {SORT_OPTIONS.find(o => o.value === sort)?.label} <FiX size={11} />
