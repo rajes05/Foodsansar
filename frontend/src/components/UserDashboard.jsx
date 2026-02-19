@@ -92,7 +92,7 @@ function UserDashboard() {
   },[categories]);
 
   return (
-    <div className='w-screen min-h-screen flex flex-col gap-5 items-center bg-[#fff9f6] overflow-y-auto pt-16'>
+    <div className='w-screen min-h-screen flex flex-col gap-5 items-center bg-[#fff9f6] overflow-y-auto pt-20'>
 
         <Nav/>
 
@@ -102,21 +102,7 @@ function UserDashboard() {
     </div>
     {/* ======= End Banner Slider ======== */}
 
-        {/* Show Search Items  */}
-        {searchItems && searchItems.length>0 && (
-          <div className='w-full max-w-6xl flex flex-col gap-5 items-start p-5 pb-[180px] bg-white shadow-md rounded-2xl mt-4'>
-              <h1 className='text-gray-900 text-2xl sm:text-3xl font-semibold border-b border-gray-200 pb-2'>Search results</h1>
-              {/* mapping search items  */}
-              <div className='w-full h-auto flex flex-wrap gap-6 justify-center'>
-                {searchItems.map((item)=>(
-                  <FoodCard data={item} key={item._id}/>
-                ))}
-              </div>
-          </div>
-        )}
-        {/* *End Show Search Items  */}
-
-            {/* ===== Category card ===== */}
+            {/* Category card  */}
         <div className='w-full max-w-6xl flex flex-col gap-5 items-start p-2.5'>
 
             <h1 className='text-gray-800 text-2xl sm:text-3xl'>Popular Categories For You</h1>
@@ -156,9 +142,9 @@ function UserDashboard() {
             </div>
 
         </div>
-            {/* ===== End Category card ===== */}
+            {/* *End Category card  */}
 
-            {/* ===== Shop card ===== */}
+            {/* Shop card */}
         <div id='shop-by-city' className='w-full max-w-6xl flex flex-col gap-5 items-start p-2.5'>
 
             <h1 className='text-gray-800 text-2xl sm:text-3xl'>Featured Shop's in {currentCity}</h1>
@@ -197,9 +183,9 @@ function UserDashboard() {
 
             </div>
         </div>
-              {/* ===== End Shop card ===== */}
+              {/* *End Shop card  */}
 
-              {/* ===== Food Card ===== */}
+              {/* Food Card  */}
         <div className='w-full max-w-6xl flex flex-col gap-5 items-start p-2.5'>
 
               <h1 className='text-gray-800 text-2xl sm:text-3xl'>Recommend's For You</h1>
@@ -211,7 +197,7 @@ function UserDashboard() {
               </div>
 
         </div>
-              {/* ===== End Food Card ===== */}
+              {/* *End Food Card  */}
 
               <Footer/>
     </div>

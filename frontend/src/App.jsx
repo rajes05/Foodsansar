@@ -27,6 +27,7 @@ import PaymentFailure from './pages/PaymentFailure';
 import { Toaster } from 'react-hot-toast';
 import LandingPage from './pages/LandingPage';
 import AboutUs from './pages/AboutUs';
+import SearchResults from './pages/SearchResults';
 
 export const serverUrl = "http://localhost:8000"; // Backend server URL
 
@@ -69,6 +70,7 @@ function App() {
         <Route path='/track-order/:orderId' element={userData ? <TrackOrderPage /> : <Navigate to={"/signin"} />} />
         <Route path='/shop/:shopId' element={userData ? <Shop /> : <Navigate to={"/signin"} />} />
         <Route path='/item/:itemId' element={userData ? <ItemDetails /> : <Navigate to={"/signin"} />} />
+        <Route path='/search' element={userData ? <SearchResults/> : <Navigate to={"/signin"} />} />
         <Route path='/about-us' element={<AboutUs />} />
       </Routes>
       <Toaster />

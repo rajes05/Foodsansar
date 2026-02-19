@@ -9,8 +9,9 @@ import { serverUrl } from '../App';
 import { setSearchItems, setUserData } from '../redux/userSlice';
 import { FaPlus } from "react-icons/fa";
 import { LuReceipt } from "react-icons/lu";
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Logo from '../../public/combination_mark.png';
+import levenshtein from 'fast-levenshtein';
 
 
 function Nav() {
@@ -25,8 +26,45 @@ function Nav() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   // handle function
+  useEffect(()=>{
+    const params = new URLSearchParams(location.search);
+    const q = params.get("q");
+
+    // sync input with URL
+    if(q){
+      setQuery(q);
+    }else{
+      setQuery("");
+      dispatch(setSearchItems(null));
+      return;
+    }
+    
+    // fetch search items using q (NOT query)
+    const handleSearchItems = async () => {
+    try {
+      const result = await axios.get(
+        `${serverUrl}/api/item/search-items?query=${q}&city=${currentCity}`,
+         { withCredentials: true });
+
+        //  sort items by relevance
+        const sorted = result.data.sort((a, b) => {
+          const distA = levenshtein.get(a.name.toLowerCase(), q.toLowerCase());
+          const distB = levenshtein.get(b.name.toLowerCase(), q.toLowerCase());
+          return distA - distB; // smaller distance = more relevance
+        })
+
+      dispatch(setSearchItems(sorted));
+    } catch (error) {
+      console.log(error)
+    }
+  };
+  handleSearchItems();
+    
+  },[location.search, currentCity]);
+  
 
   const handleLogOut = async () => {
     try {
@@ -41,23 +79,37 @@ function Nav() {
     }
   }
 
-  const handleSearchItems = async () => {
-    try {
-      const result = await axios.get(`${serverUrl}/api/item/search-items?query=${query}&city=${currentCity}`, { withCredentials: true })
-      dispatch(setSearchItems(result.data))
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  // useEffect(() => {
+  //   if (query) {
+  //     handleSearchItems()
+  //   } else {
+  //     dispatch(setSearchItems(null))
+  //   }
 
-  useEffect(() => {
-    if (query) {
-      handleSearchItems()
-    } else {
-      dispatch(setSearchItems(null))
-    }
+  // }, [query])
 
-  }, [query])
+  // useEffect(()=>{
+  //   if(!query.trim()){
+  //     dispatch(setSearchItems(null));
+  //     return;
+  //   }
+  //   const timer = setTimeout(async () =>{
+  //     try {
+  //       const result = await axios.get(
+  //         `${serverUrl}/api/item/search-items?query=${query}&city=${currentCity}`,
+  //         {withCredentials:true}
+  //       );
+  //       dispatch(setSearchItems(result.data));
+
+  //       if(location.pathname !== '/search'){
+  //         navigate('/search');
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   },350);
+  //   return()=> clearTimeout(timer);
+  // },[query])
 
   return (
     <div className='w-full h-20 flex items-center justify-between md:justify-center gap-[30px] px-5 fixed top-0 z-9999 bg-[#fff9f6] overflow-visible'>
@@ -78,8 +130,31 @@ function Nav() {
 
         <div className='w-[80%] flex items-center gap-2.5'>
 
-          <IoIosSearch size={25} className='text-[#ff4d2d]' />
-          <input type="text" placeholder='Search delicious food...' className='px-2.5 text-gray-700 outline-0 w-full' onChange={(e) => setQuery(e.target.value)} value={query} />
+          <IoIosSearch size={25} className='text-[#ff4d2d] cursor-pointer' onClick={()=>{
+            if(query.trim()){
+              navigate(`/search?q=${query}`);
+            }else{
+              navigate("/")
+            }
+          }}/>
+         <input 
+          type="text" 
+          placeholder='Search delicious food...' 
+          className='px-2.5 text-gray-700 outline-0 w-full' 
+          onChange={(e) => {
+            setQuery(e.target.value);
+          }} 
+          value={query}
+          onKeyDown={(e)=>{
+            if(e.key === "Enter"){
+              if(query.trim()){
+              navigate(`/search?q=${query}`)
+            }else{
+              navigate("/");
+            }
+            }      
+          }}
+          />
 
         </div>
       </div>}
@@ -109,9 +184,31 @@ function Nav() {
 
         <div className='w-[80%] flex items-center gap-2.5'>
 
-          <IoIosSearch size={25} className='text-[#ff4d2d]' />
-          <input type="text" placeholder='Search delicious food...' className='px-2.5 text-gray-700 outline-0 w-full' onChange={(e) => setQuery(e.target.value)} value={query} />
-
+          <IoIosSearch size={25} className='text-[#ff4d2d] cursor-pointer' onClick={()=>{
+            if(query.trim()){
+              navigate(`/search?q=${query}`);
+            }else{
+              navigate("/")
+            }
+          }}/>
+         <input 
+          type="text" 
+          placeholder='Search delicious food...' 
+          className='px-2.5 text-gray-700 outline-0 w-full' 
+          onChange={(e) => {
+            setQuery(e.target.value);
+          }} 
+          value={query}
+          onKeyDown={(e)=>{
+            if(e.key === "Enter"){
+              if(query.trim()){
+              navigate(`/search?q=${query}`)
+            }else{
+              navigate("/");
+            }
+            }      
+          }}
+          />
         </div>
       </div>}
       {/* ===== end mid nav section ===== */}

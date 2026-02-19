@@ -85,7 +85,7 @@ const userSlice = createSlice({
             }
         },
         setSearchItems: (state, action) => {
-            state.searchItems = action.payload
+            state.searchItems = action.payload;
         }
     }
 });
