@@ -92,7 +92,7 @@ function UserDashboard() {
   },[categories]);
 
   return (
-    <div className='w-screen min-h-screen flex flex-col gap-5 items-center bg-[#fff9f6] overflow-y-auto pt-20'>
+    <div className='w-screen min-h-screen flex flex-col gap-5 items-center bg-[#fff9f6] overflow-y-auto pt-16'>
 
         <Nav/>
 
@@ -116,12 +116,7 @@ function UserDashboard() {
         )}
         {/* *End Show Search Items  */}
 
-        {/* <div className='w-full mt-[-180px]'>
-        <HeroSection/>
-        </div> */}
-
-
-            {/* Category card  */}
+            {/* ===== Category card ===== */}
         <div className='w-full max-w-6xl flex flex-col gap-5 items-start p-2.5'>
 
             <h1 className='text-gray-800 text-2xl sm:text-3xl'>Popular Categories For You</h1>
@@ -161,9 +156,9 @@ function UserDashboard() {
             </div>
 
         </div>
-            {/* *End Category card  */}
+            {/* ===== End Category card ===== */}
 
-            {/* Shop card */}
+            {/* ===== Shop card ===== */}
         <div id='shop-by-city' className='w-full max-w-6xl flex flex-col gap-5 items-start p-2.5'>
 
             <h1 className='text-gray-800 text-2xl sm:text-3xl'>Featured Shop's in {currentCity}</h1>
@@ -202,9 +197,9 @@ function UserDashboard() {
 
             </div>
         </div>
-              {/* *End Shop card  */}
+              {/* ===== End Shop card ===== */}
 
-              {/* Food Card  */}
+              {/* ===== Food Card ===== */}
         <div className='w-full max-w-6xl flex flex-col gap-5 items-start p-2.5'>
 
               <h1 className='text-gray-800 text-2xl sm:text-3xl'>Recommend's For You</h1>
@@ -216,7 +211,7 @@ function UserDashboard() {
               </div>
 
         </div>
-              {/* *End Food Card  */}
+              {/* ===== End Food Card ===== */}
 
               <Footer/>
     </div>
