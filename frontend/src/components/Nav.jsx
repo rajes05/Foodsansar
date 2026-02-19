@@ -86,7 +86,12 @@ function Nav() {
 
         {/* ===== LOGO ===== */}
       {/* <h1 className='text-3xl font-bold mb-2 text-[#ff4d2d]'>FoodSansar</h1> */}
-      <img src={Logo} alt="FoodSansar" className='h-12 md:h-14 mb-2 object-contain'/>
+      <div 
+      className='flex items-center justify-center h-20 cursor-pointer'
+      onClick={()=>navigate("/")}
+      >
+        <img src={Logo} alt="FoodSansar" className='h-16 md:h-18 object-contain'/>
+      </div>
       {/* ===== END OF LOGO ===== */}
 
       {/* ====== mid nav section ====== */}
