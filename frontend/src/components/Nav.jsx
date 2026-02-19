@@ -84,12 +84,12 @@ function Nav() {
       </div>}
       {/* ===== end popup search ===== */}
 
-        {/* ===== LOGO ===== */}
-      <div 
-      className='flex items-center justify-center h-20 cursor-pointer'
-      onClick={()=>navigate("/")}
+      {/* ===== LOGO ===== */}
+      <div
+        className='flex items-center justify-center h-20 cursor-pointer'
+        onClick={() => navigate("/")}
       >
-        <img src={Logo} alt="FoodSansar" className='h-16 md:h-18 object-contain'/>
+        <img src={Logo} alt="FoodSansar" className='h-16 md:h-18 object-contain' />
       </div>
       {/* ===== END OF LOGO ===== */}
 
@@ -164,45 +164,62 @@ function Nav() {
               <div className='relative cursor-pointer' onClick={() => navigate("/cart")}>
 
                 <FiShoppingCart size={25} className='text-[#ff4d2d]' />
-                <span className='absolute right-[-9px] -top-3 text-[#ff4d2d]'>{cartItems.length}</span>
+                {cartItems.length>0 && (
+                  <span className='absolute right-[-9px] -top-3 text-[#ff4d2d]'>
+                    {cartItems.length}
+                    </span>
+                )
+                }
 
               </div>
             }
 
 
-            {/* my order for User */}
-            <button className='hidden md:block px-3 py-1 rounded-lg bg-[#ff4d2d]/10 text-[#ff4d2d] text-sm font-medium' onClick={() => navigate("/my-orders")}>
-              My Orders
-            </button>
+            {/* my orders for User */}
+            <div className='hidden md:flex items-center gap-2 cursor-pointer relative rounded-lg bg-[#ff4d2d]/10 text-[#ff4d2d] px-3 py-1 font-medium' onClick={() => navigate("/my-orders")}>
+              <LuReceipt size={20} />
+              <span>My Orders</span>
+              {myOrders.length > 0 &&
+                <span
+                  className='absolute -right-2 -top-2 text-xs font-bold text-white bg-[#ff4d2d] rounded-full px-1.5 py-px'>
+                  {myOrders.length}
+                </span>
+              }
+            </div>
+            {/* End my orders for user */}
 
           </>
 
         )}
 
         {/* my profile  */}
+        <div className='relative'>
+          <div className='w-10 h-10 rounded-full flex items-center justify-center bg-[#ff4d2d] text-white text-[18px] shadow-xl font-semibold cursor-pointer'
+            onClick={() => setShowInfo(prev => !prev)}>
+            {userData?.fullName.slice(0, 1)}
+          </div>
 
-        <div className='w-10 h-10 rounded-full flex items-center justify-center bg-[#ff4d2d] text-white text-[18px] shadow-xl font-semibold cursor-pointer' onClick={() => setShowInfo(prev => !prev)}>
-          {userData?.fullName.slice(0, 1)}
+          {/* ==== popup profile ==== */}
+          {showInfo &&
+            <div className={`absolute top-12 right-0 ${userData.role == "deliveryBoy" ? "md:right-[20%] lg:right-[40%]" : "md:right-[10%] lg:right-[25%]"}  w-[180px] bg-white shadow-2xl rounded-xl p-5 flex flex-col gap-2.5 z-9999`}>
+
+              <div className='text-[17px] font-semibold'>{userData.fullName}</div>
+
+              {/* Show 'My Orders' when role=user */}
+
+              {userData.role == "user" &&
+                <div className='md:hidden text-[#ff4d2d] font-semibold cursor-pointer' onClick={() => navigate("/my-orders")}>My Orders</div>
+              }
+              <div className='text-[#ff4d2d] font-semibold cursor-pointer' onClick={handleLogOut}>
+                Log Out
+              </div>
+
+            </div>
+          }
+          {/* ==== End Popup Profile ==== */}
         </div>
-
         {/* *End My Profile  */}
 
-        {/* popup profile*/}
-        {showInfo &&
-          <div className={`fixed top-20 right-2.5 ${userData.role == "deliveryBoy" ? "md:right-[20%] lg:right-[40%]" : "md:right-[10%] lg:right-[25%]"}  w-[180px] bg-white shadow-2xl rounded-xl p-5 flex flex-col gap-2.5 z-9999`}>
-
-            <div className='text-[17px] font-semibold'>{userData.fullName}</div>
-
-            {/* Show 'My Orders' when role=user */}
-
-            {userData.role == "user" &&
-              <div className='md:hidden text-[#ff4d2d] font-semibold cursor-pointer' onClick={() => navigate("/my-orders")}>My Orders</div>
-            }
-            <div className='text-[#ff4d2d] font-semibold cursor-pointer' onClick={handleLogOut}>Log Out</div>
-
-          </div>
-        }
-        {/* *End Popup Profile  */}
 
       </div>
       {/* ===== end right nav section ===== */}
