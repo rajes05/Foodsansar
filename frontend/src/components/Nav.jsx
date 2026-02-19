@@ -85,7 +85,6 @@ function Nav() {
       {/* ===== end popup search ===== */}
 
         {/* ===== LOGO ===== */}
-      {/* <h1 className='text-3xl font-bold mb-2 text-[#ff4d2d]'>FoodSansar</h1> */}
       <div 
       className='flex items-center justify-center h-20 cursor-pointer'
       onClick={()=>navigate("/")}
