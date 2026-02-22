@@ -1,4 +1,4 @@
-import NavLanding from "../components/NavLanding";
+import NavLanding from "../components/nav/GuestNav";
 import Footer from "../components/Footer";
 import { useSelector } from "react-redux";
 import { FaArrowLeft } from "react-icons/fa";

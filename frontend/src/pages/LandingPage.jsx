@@ -1,11 +1,13 @@
-import NavLanding from "../components/NavLanding";
+// import NavLanding from "../components/NavLanding";
 import Footer from "../components/Footer";
 import HeroSection from "../components/HeroSection";
+import Nav from "../components/Nav";
 
 function LandingPage() {
     return (
         <div className="w-full min-h-screen">
-            <NavLanding />
+            {/* <NavLanding /> */}
+            <Nav/>
             <HeroSection />
 
             {/* Why Choose Us Section */}
