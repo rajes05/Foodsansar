@@ -46,6 +46,87 @@ function ItemDetails() {
     const [wishlisted, setWishlisted] = useState(false);
     const [addedAnim, setAddedAnim] = useState(false);
     const [selectedImg, setSelectedImg] = useState(0);
+    // recommendation feat
+    const [showAllRecs, setShowAllRecs] = useState(false); // controls show more/less
+    const RECS_PER_ROW = 4; // max items shown in one row
+    // End recommendation feat
+
+    // recommendation feat
+    /**
+     * aprioriScore: simplified Apriori-inspired algorithm.
+     * Items that share the same category AND food-type as the current item
+     * are given a higher "support" score (they frequently appear together
+     * in the same "basket" context defined by those two attributes).
+     */
+    const aprioriScore = (rec, currentItem) => {
+        let score = 0;
+        if (rec.category === currentItem?.category) score += 2;   // strong association
+        if (rec.foodType === currentItem?.foodType) score += 1;    // weaker association
+        return score;
+    };
+
+    /**
+     * contentScore: content-based filtering.
+     * Measures similarity between rec and current item using category,
+     * foodType, and price proximity.
+     */
+    const contentScore = (rec, currentItem) => {
+        let score = 0;
+        if (rec.category === currentItem?.category) score += 3;
+        if (rec.foodType === currentItem?.foodType) score += 2;
+        // price proximity: closer price → higher score (max +2)
+        const priceDiff = Math.abs(rec.price - (currentItem?.price || 0));
+        score += Math.max(0, 2 - priceDiff / 100);
+        return score;
+    };
+
+    /**
+     * popularityScore: popularity-based filtering.
+     * Uses the item's average rating and review count to rank items.
+     */
+    const popularityScore = (rec) => {
+        const avg = rec.rating?.average || 0;
+        const cnt = rec.rating?.count || 0;
+        return avg * Math.log1p(cnt); // weighted popularity
+    };
+
+    /**
+     * collaborativeScore: user-based collaborative filtering (simplified).
+     * Without full user history, we approximate by assuming users who liked
+     * highly-rated items in the same category also like similarly-rated items.
+     * Score = rating similarity + category match.
+     */
+    const collaborativeScore = (rec, currentItem) => {
+        const currentAvg = currentItem?.rating?.average || 0;
+        const recAvg = rec.rating?.average || 0;
+        const ratingProximity = 5 - Math.abs(currentAvg - recAvg); // max 5
+        const categoryMatch = rec.category === currentItem?.category ? 3 : 0;
+        return ratingProximity + categoryMatch;
+    };
+
+    /**
+     * combineScores: merge all four algorithm scores with equal weights.
+     * Returns a sorted array of recommendation items with algorithm badges.
+     */
+    const combineAndRankRecs = (items, currentItem) => {
+        return items
+            .map((rec) => {
+                const pop = popularityScore(rec);
+                const cont = contentScore(rec, currentItem);
+                const collab = collaborativeScore(rec, currentItem);
+                const apr = aprioriScore(rec, currentItem);
+                const total = pop + cont + collab + apr;
+                // determine primary algorithm badge
+                const maxScore = Math.max(pop, cont, collab, apr);
+                let badge = "Popular";
+                if (maxScore === cont) badge = "Similar";
+                else if (maxScore === collab) badge = "Users Also Liked";
+                else if (maxScore === apr) badge = "Frequently Together";
+                return { ...rec, _recScore: total, _recBadge: badge };
+            })
+            .sort((a, b) => b._recScore - a._recScore);
+    };
+    // End recommendation feat
 
     useEffect(() => {
         const fetchAll = async () => {
@@ -61,7 +142,9 @@ function ItemDetails() {
                 setLoading(false);
                 setReviewsLoading(false);
 
-                // fetch recommendations by category
+                // recommendation feat
+                // Fetch all items in the same category (excluding current) then
+                // rank them using all four recommendation algorithms.
                 const category = itemRes.data?.category;
                 if (category) {
                     try {
@@ -69,11 +152,16 @@ function ItemDetails() {
                             `${serverUrl}/api/item/by-category?category=${encodeURIComponent(category)}&exclude=${itemId}`,
                             { withCredentials: true },
                         );
-                        setRecommendations(recRes.data?.items || recRes.data || []);
+                        const rawItems = (recRes.data?.items || recRes.data || [])
+                            .filter((i) => i._id !== itemId); // recommendation feat – exclude the currently viewed item from recommendations
+                        // Apply all four algorithms and sort by combined score
+                        const ranked = combineAndRankRecs(rawItems, itemRes.data);
+                        setRecommendations(ranked);
                     } catch {
                         setRecommendations([]);
                     }
                 }
+                // End recommendation feat
                 setRecLoading(false);
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -150,13 +238,13 @@ function ItemDetails() {
             }}
         >
             {/* Nav */}
-            <Nav/>
+            <Nav />
 
             {/* <RollBackButton
                 to={-1}
             /> */}
 
-            <div style={{ position: 'absolute', paddingTop: '100px', paddingLeft: '16px'}}>
+            <div style={{ position: 'absolute', paddingTop: '100px', paddingLeft: '16px' }}>
                 <RollBackButton to={-1} fixed={false} />
             </div>
 
@@ -361,7 +449,7 @@ function ItemDetails() {
                         borderRadius: 2,
                         overflow: "hidden",
                         boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
-                        marginTop:'50px'
+                        marginTop: '50px'
                     }}
                     className="slide-down"
                 >
@@ -844,7 +932,7 @@ function ItemDetails() {
                         borderRadius: 2,
                         boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
                         overflow: "hidden",
-                        marginTop: '60px' 
+                        marginTop: '60px'
                     }}
                 >
                     {/* Tab Buttons */}
@@ -871,7 +959,7 @@ function ItemDetails() {
 
                     {/* Tab Content */}
                     <div
-                        style={{ padding: "24px"}}
+                        style={{ padding: "24px" }}
                         className="slide-down"
                         key={activeTab}
                     >
@@ -1163,6 +1251,7 @@ function ItemDetails() {
                 {/* ===== End Description and Reviews Tabs ====== */}
 
                 {/* ============ RECOMMENDATIONS SECTION ============ */}
+                {/* recommendation feat */}
                 <div
                     style={{
                         marginTop: '60px',
@@ -1199,6 +1288,31 @@ function ItemDetails() {
                             >
                                 {item.category}
                             </span>
+                            {/* recommendation feat – algorithm badges legend */}
+                            <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginLeft: 6 }}>
+                                {[
+                                    { label: "Popular", color: "#e67e00" },
+                                    { label: "Similar", color: "#1a7abf" },
+                                    { label: "Users Also Liked", color: "#2e7d32" },
+                                    { label: "Frequently Together", color: "#7b1fa2" },
+                                ].map((b) => (
+                                    <span
+                                        key={b.label}
+                                        style={{
+                                            background: b.color + "18",
+                                            color: b.color,
+                                            fontSize: 10,
+                                            fontWeight: 700,
+                                            padding: "2px 6px",
+                                            borderRadius: 2,
+                                            border: "1px solid " + b.color + "44",
+                                        }}
+                                    >
+                                        {b.label}
+                                    </span>
+                                ))}
+                            </div>
+                            {/* End recommendation feat – algorithm badges legend */}
                         </div>
                         <button
                             style={{
@@ -1217,154 +1331,206 @@ function ItemDetails() {
                         </button>
                     </div>
 
-                    {/* Recommendation Cards */}
+                    {/* recommendation feat – Recommendation Cards with show more/less */}
                     <div style={{ padding: "16px 20px" }}>
                         {recLoading ? (
                             <div style={{ textAlign: "center", padding: 30 }}>
                                 <ClipLoader size={28} color="#F85606" />
                             </div>
                         ) : recommendations.length > 0 ? (
-                            <div
-                                style={{
-                                    display: "grid",
-                                    gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
-                                    gap: 10,
-                                }}
-                            >
-                                {recommendations.slice(0, 6).map((rec) => (
-                                    <div
-                                        key={rec._id}
-                                        className="rec-card"
-                                        onClick={() => navigate(`/item/${rec._id}`)}
-                                    >
-                                        {/* Image */}
+                            <>
+                                {/* recommendation feat – grid limited to RECS_PER_ROW unless showAllRecs */}
+                                <div
+                                    style={{
+                                        display: "grid",
+                                        gridTemplateColumns: `repeat(${RECS_PER_ROW}, 1fr)`,
+                                        gap: 10,
+                                    }}
+                                >
+                                    {/* recommendation feat – slice to show 1 row (RECS_PER_ROW items) by default */}
+                                    {(showAllRecs ? recommendations : recommendations.slice(0, RECS_PER_ROW)).map((rec) => (
                                         <div
-                                            style={{
-                                                width: "100%",
-                                                aspectRatio: "1/1",
-                                                overflow: "hidden",
-                                                background: "#f5f5f5",
-                                                position: "relative",
-                                            }}
+                                            key={rec._id}
+                                            className="rec-card"
+                                            onClick={() => navigate(`/item/${rec._id}`)}
                                         >
-                                            <img
-                                                src={rec.image}
-                                                alt={rec.name}
+                                            {/* Image */}
+                                            <div
                                                 style={{
                                                     width: "100%",
-                                                    height: "100%",
-                                                    objectFit: "cover",
-                                                    display: "block",
-                                                }}
-                                            />
-                                            {/* Food type tag */}
-                                            <div style={{ position: "absolute", top: 6, left: 6 }}>
-                                                {rec.foodType === "veg" ? (
-                                                    <span className="badge-veg">
-                                                        <FaLeaf size={8} />
-                                                    </span>
-                                                ) : (
-                                                    <span className="badge-nonveg">
-                                                        <FaDrumstickBite size={8} />
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </div>
-                                        {/* Info */}
-                                        <div style={{ padding: "10px" }}>
-                                            <div
-                                                style={{
-                                                    fontSize: 13,
-                                                    fontWeight: 700,
-                                                    color: "#222",
-                                                    marginBottom: 4,
-                                                    lineHeight: 1.4,
+                                                    aspectRatio: "1/1",
                                                     overflow: "hidden",
-                                                    display: "-webkit-box",
-                                                    WebkitLineClamp: 2,
-                                                    WebkitBoxOrient: "vertical",
+                                                    background: "#f5f5f5",
+                                                    position: "relative",
                                                 }}
                                             >
-                                                {rec.name}
-                                            </div>
-                                            <div
-                                                style={{
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    gap: 4,
-                                                    marginBottom: 6,
-                                                }}
-                                            >
-                                                <FaStar color="#FFD000" size={11} />
-                                                <span
+                                                <img
+                                                    src={rec.image}
+                                                    alt={rec.name}
                                                     style={{
-                                                        fontSize: 12,
+                                                        width: "100%",
+                                                        height: "100%",
+                                                        objectFit: "cover",
+                                                        display: "block",
+                                                    }}
+                                                />
+                                                {/* Food type tag */}
+                                                <div style={{ position: "absolute", top: 6, left: 6 }}>
+                                                    {rec.foodType === "veg" ? (
+                                                        <span className="badge-veg">
+                                                            <FaLeaf size={8} />
+                                                        </span>
+                                                    ) : (
+                                                        <span className="badge-nonveg">
+                                                            <FaDrumstickBite size={8} />
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                {/* recommendation feat – algorithm source badge */}
+                                                {rec._recBadge && (
+                                                    <div
+                                                        style={{
+                                                            position: "absolute",
+                                                            bottom: 6,
+                                                            right: 6,
+                                                            background:
+                                                                rec._recBadge === "Popular" ? "#e67e00" :
+                                                                    rec._recBadge === "Similar" ? "#1a7abf" :
+                                                                        rec._recBadge === "Users Also Liked" ? "#2e7d32" :
+                                                                            "#7b1fa2",
+                                                            color: "white",
+                                                            fontSize: 9,
+                                                            fontWeight: 700,
+                                                            padding: "2px 5px",
+                                                            borderRadius: 2,
+                                                        }}
+                                                    >
+                                                        {rec._recBadge}
+                                                    </div>
+                                                )}
+                                                {/* End recommendation feat – algorithm source badge */}
+                                            </div>
+                                            {/* Info */}
+                                            <div style={{ padding: "10px" }}>
+                                                <div
+                                                    style={{
+                                                        fontSize: 13,
                                                         fontWeight: 700,
                                                         color: "#222",
+                                                        marginBottom: 4,
+                                                        lineHeight: 1.4,
+                                                        overflow: "hidden",
+                                                        display: "-webkit-box",
+                                                        WebkitLineClamp: 2,
+                                                        WebkitBoxOrient: "vertical",
                                                     }}
                                                 >
-                                                    {rec.rating?.average?.toFixed(1) || "0.0"}
-                                                </span>
-                                                <span style={{ fontSize: 11, color: "#bbb" }}>
-                                                    ({rec.rating?.count || 0})
-                                                </span>
+                                                    {rec.name}
+                                                </div>
+                                                <div
+                                                    style={{
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        gap: 4,
+                                                        marginBottom: 6,
+                                                    }}
+                                                >
+                                                    <FaStar color="#FFD000" size={11} />
+                                                    <span
+                                                        style={{
+                                                            fontSize: 12,
+                                                            fontWeight: 700,
+                                                            color: "#222",
+                                                        }}
+                                                    >
+                                                        {rec.rating?.average?.toFixed(1) || "0.0"}
+                                                    </span>
+                                                    <span style={{ fontSize: 11, color: "#bbb" }}>
+                                                        ({rec.rating?.count || 0})
+                                                    </span>
+                                                </div>
+                                                <div
+                                                    style={{
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        gap: 2,
+                                                    }}
+                                                >
+                                                    <FaRupeeSign size={11} color="#F85606" />
+                                                    <span
+                                                        style={{
+                                                            fontSize: 15,
+                                                            fontWeight: 900,
+                                                            color: "#F85606",
+                                                        }}
+                                                    >
+                                                        {rec.price}
+                                                    </span>
+                                                </div>
                                             </div>
+                                            {/* Hover overlay */}
                                             <div
-                                                style={{
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    gap: 2,
+                                                className="rec-cart-overlay"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    dispatch(
+                                                        addToCart({
+                                                            id: rec._id,
+                                                            name: rec.name,
+                                                            price: rec.price,
+                                                            image: rec.image,
+                                                            shop: rec.shop,
+                                                            quantity: 1,
+                                                            foodType: rec.foodType,
+                                                        }),
+                                                    );
                                                 }}
                                             >
-                                                <FaRupeeSign size={11} color="#F85606" />
-                                                <span
-                                                    style={{
-                                                        fontSize: 15,
-                                                        fontWeight: 900,
-                                                        color: "#F85606",
-                                                    }}
-                                                >
-                                                    {rec.price}
-                                                </span>
+                                                <FaShoppingCart
+                                                    size={12}
+                                                    style={{ display: "inline", marginRight: 5 }}
+                                                />
+                                                Add to Cart
                                             </div>
                                         </div>
-                                        {/* Hover overlay */}
-                                        <div
-                                            className="rec-cart-overlay"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                dispatch(
-                                                    addToCart({
-                                                        id: rec._id,
-                                                        name: rec.name,
-                                                        price: rec.price,
-                                                        image: rec.image,
-                                                        shop: rec.shop,
-                                                        quantity: 1,
-                                                        foodType: rec.foodType,
-                                                    }),
-                                                );
+                                    ))}
+                                </div>
+                                {/* recommendation feat – Show More / Show Less button */}
+                                {recommendations.length > RECS_PER_ROW && (
+                                    <div style={{ textAlign: "center", marginTop: 18 }}>
+                                        <button
+                                            onClick={() => setShowAllRecs((prev) => !prev)}
+                                            style={{
+                                                background: showAllRecs ? "#fff" : "#F85606",
+                                                color: showAllRecs ? "#F85606" : "#fff",
+                                                border: "1.5px solid #F85606",
+                                                borderRadius: 2,
+                                                padding: "8px 28px",
+                                                fontSize: 13,
+                                                fontWeight: 800,
+                                                cursor: "pointer",
+                                                transition: "background 0.2s, color 0.2s",
+                                                letterSpacing: 0.3,
                                             }}
                                         >
-                                            <FaShoppingCart
-                                                size={12}
-                                                style={{ display: "inline", marginRight: 5 }}
-                                            />
-                                            Add to Cart
-                                        </div>
+                                            {showAllRecs
+                                                ? `Show Less ▲`
+                                                : `Show More (${recommendations.length - RECS_PER_ROW} more) ▼`}
+                                        </button>
                                     </div>
-                                ))}
-                            </div>
+                                )}
+                                {/* End recommendation feat – Show More / Show Less button */}
+                            </>
                         ) : (
                             /* Skeleton fallback if no recommendations yet */
                             <div
                                 style={{
                                     display: "grid",
-                                    gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
+                                    gridTemplateColumns: `repeat(${RECS_PER_ROW}, 1fr)`,
                                     gap: 10,
                                 }}
                             >
-                                {Array.from({ length: 5 }).map((_, i) => (
+                                {Array.from({ length: RECS_PER_ROW }).map((_, i) => (
                                     <div
                                         key={i}
                                         style={{
@@ -1400,6 +1566,7 @@ function ItemDetails() {
                         )}
                     </div>
                 </div>
+                {/* End recommendation feat */}
                 {/* ============ END RECOMMENDATIONS SECTION ============ */}
 
             </div>

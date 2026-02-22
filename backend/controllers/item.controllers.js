@@ -151,7 +151,7 @@ export const getItemByCity = async (req, res) => {
     const shopIds = shops.map((shop) => shop._id);
 
     const items = await Item.find({ shop: { $in: shopIds } })
-    .populate("shop", "name")
+      .populate("shop", "name")
 
     return res.status(200).json(items);
   } catch (error) {
@@ -163,10 +163,10 @@ export const getItemByShop = async (req, res) => {
   try {
     const { shopId } = req.params;
     const shop = await Shop.findById(shopId).populate({
-      path:"items",
-      populate:{
-        path:"shop",
-        select:"name"
+      path: "items",
+      populate: {
+        path: "shop",
+        select: "name"
       }
     });
     if (!shop) {
@@ -255,3 +255,42 @@ export const rating = async (req, res) => {
     return res.status(500).json({ message: `rating error ${error}` })
   }
 }
+
+// recommendation feat
+// Controller to get items by category (excluding the current item)
+// Used by all four recommendation algorithms on the frontend
+export const getItemsByCategory = async (req, res) => {
+  try {
+    const { category, exclude } = req.query;
+
+    if (!category) {
+      return res.status(400).json({ message: "category is required" });
+    }
+
+    // Build query: match category case-insensitively, exclude current item
+    const query = {
+      category: { $regex: new RegExp(`^${category}$`, "i") },
+    };
+    if (exclude) {
+      // Dynamically import mongoose to avoid circular deps
+      const mongoose = (await import("mongoose")).default;
+      if (mongoose.Types.ObjectId.isValid(exclude)) {
+        query._id = { $ne: new mongoose.Types.ObjectId(exclude) };
+      }
+    }
+
+    // Pre-sort by average rating desc so highly-rated items come first
+    // Frontend re-ranks using combined algorithm scores anyway
+    const items = await Item.find(query)
+      .populate("shop", "name")
+      .sort({ "rating.average": -1 })
+      .limit(20); // cap at 20 items to keep payload small
+
+    return res.status(200).json({ items });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: `get items by category error: ${error.message}` });
+  }
+};
+// End recommendation feat
