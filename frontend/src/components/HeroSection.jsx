@@ -405,7 +405,7 @@ export default function HeroSection() {
             </p>
 
             <div className="hero-ctas">
-              <a href="#restaurants" className="hero-btn-primary">
+              <a href="/signup" className="hero-btn-primary">
                 Order Now
                 <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                   <path d="M5 12h14M12 5l7 7-7 7" />
@@ -421,7 +421,7 @@ export default function HeroSection() {
 
             <div className="hero-stats">
               <div className="stat-item">
-                <span className="stat-num">500+</span>
+                <span className="stat-num">100+</span>
                 <span className="stat-label">Restaurants</span>
               </div>
               <div className="stat-divider" />
@@ -431,7 +431,7 @@ export default function HeroSection() {
               </div>
               <div className="stat-divider" />
               <div className="stat-item">
-                <span className="stat-num">4.8★</span>
+                <span className="stat-num">4.1★</span>
                 <span className="stat-label">User rating</span>
               </div>
             </div>

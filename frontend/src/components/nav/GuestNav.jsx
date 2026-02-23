@@ -19,21 +19,15 @@ function GuestNav() {
       <div className='hidden md:flex items-center gap-1 flex-1 justify-center'>
         <a
           href="#how-it-works"
-          className='text-sm font-medium text-gray-500 px-4 py-2 rounded-lg hover:text-gray-900 hover:bg-[#ff4d2d]/10 hover:text-[#ff4d2d] transition-all duration-150'
+          className='text-sm font-medium text-gray-500 px-4 py-2 rounded-lg hover:bg-[#ff4d2d]/10 hover:text-[#ff4d2d] transition-all duration-150'
         >
           How it works
         </a>
         <a
-          href="#"
+          href="#join-us"
           className='text-sm font-medium text-gray-500 px-4 py-2 rounded-lg hover:bg-[#ff4d2d]/10 hover:text-[#ff4d2d] transition-all duration-150'
         >
-          Restaurants
-        </a>
-        <a
-          href="#"
-          className='text-sm font-medium text-gray-500 px-4 py-2 rounded-lg hover:bg-[#ff4d2d]/10 hover:text-[#ff4d2d] transition-all duration-150'
-        >
-          Deals
+          Join Us
         </a>
       </div>
       {/* ===== END CENTER NAV LINKS ===== */}

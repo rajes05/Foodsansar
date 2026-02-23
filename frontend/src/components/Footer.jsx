@@ -1,7 +1,6 @@
 import { Facebook, Twitter, Instagram, MapPin, Mail, Phone } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import Logo from '../../public/combination_mark.png'
 
 function Footer() {
   const navigate = useNavigate();
@@ -14,7 +13,7 @@ function Footer() {
         >
           {/* <h2 className="text-2xl font-bold text-[#ff4d2d]">FoodSansar</h2> */}
           <div className="flex items-center justify-start cursor-pointer">
-          <img src={Logo} alt="FoodSansar" className='h-10 md:h-10 object-contain' />
+          <img src="/combination_mark.png" alt="FoodSansar" className='h-10 md:h-10 object-contain' />
           </div>
           <p className="text-sm leading-relaxed">
             Your favorite food delivery service. Fresh, fast, and delicious meals
