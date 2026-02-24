@@ -15,18 +15,41 @@ import adminRouter from './routes/admin.routes.js';
 
 const app = express(); // initializes the Express application
 const port = process.env.PORT || 5000;
+const allowedOrigins = process.env.WHITE_LISTED_ORIGINS?.split(",") || [];
 
 app.use(cors({
-    origin: "http://localhost:5173", // this origin is allowed to access the server
-    credentials: true,
+    origin: function(origin, callback) {
+        // allow requests with no origin (Postman, server-to-server)
+        if (!origin) return callback(null, true);
 
+        // allow if origin is in whitelist
+        if (allowedOrigins.includes(origin)) return callback(null, true);
+
+        // allow localhost automatically in development
+        if (process.env.NODE_ENV !== "production" && origin.startsWith("http://localhost")) {
+            return callback(null, true);
+        }
+
+        // reject everything else
+        return callback(new Error(`CORS Error: Origin ${origin} is not allowed`));
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type","Authorization"]
 }));
 
 app.use(express.json()); // middleware to read req.body as JSON
 app.use(cookieParser()); // middleware to parse cookies from incoming requests
 
-// routes
+// Health Check
+app.get('/health',(req, res)=>{
+    res.json({
+        status:"OK",
+        message:"FoodSansar s running"
+    })
+})
 
+// routes
 app.use("/api/auth", authRouter); // use the auth router for routes starting with /api/auth
 app.use("/api/user", userRouter); // use the user router for routes starting with /api/user
 app.use("/api/shop", shopRouter); // use the shop router for routes starting with /api/shop
