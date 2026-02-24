@@ -11,6 +11,7 @@ import { LuReceipt } from "react-icons/lu";
 import { useNavigate } from 'react-router-dom';
 import SearchBar from './composite/SearchBar';
 import GuestNav from './nav/GuestNav';
+import { DeliveryBoyNav } from './nav/DeliveryBoyNav';
 
 
 function Nav() {
@@ -52,7 +53,8 @@ function Nav() {
         {/* ====== End 1. Guenst User Nav======  */}
 
         {/* ====== 2. User Nav ======  */}
-        {userData !== null && (
+        {/* wraping with (userData && ) so landing page couldn't read */}
+        {(userData && (userData.role == "user" || userData.role == "owner")) && (
           <>
 
             {/* ===== LOGO =====  */}
@@ -109,16 +111,16 @@ function Nav() {
                     <div className='hidden md:flex items-center gap-2 cursor-pointer relative rounded-lg bg-[#ff4d2d]/10 text-[#ff4d2d] px-3 py-1 font-medium' onClick={() => navigate("/my-orders")}>
                       <LuReceipt size={20} />
                       <span>My Orders</span>
-                      {myOrders.length>0 && 
-                      <span className='absolute -right-2 -top-2 text-xs fond-bold text-white bg-[#ff4d2d] rounded-full px-1.5 py-px'>{myOrders.length}</span>
+                      {myOrders.length > 0 &&
+                        <span className='absolute -right-2 -top-2 text-xs fond-bold text-white bg-[#ff4d2d] rounded-full px-1.5 py-px'>{myOrders.length}</span>
                       }
                     </div>
 
                     {/* My Orders for small devices */}
                     <div className='md:hidden flex items-center gap-2 cursor-pointer relative rounded-lg bg-[#ff4d2d]/10 text-[#ff4d2d] px-3 py-1 font-medium' onClick={() => navigate("/my-orders")}>
                       <LuReceipt size={20} />
-                      {myOrders.length>0 &&
-                      <span className='absolute -right-2 -top-2 text-xs fond-bold text-white bg-[#ff4d2d] rounded-full px-1.5 py-px'>{myOrders.length}</span>
+                      {myOrders.length > 0 &&
+                        <span className='absolute -right-2 -top-2 text-xs fond-bold text-white bg-[#ff4d2d] rounded-full px-1.5 py-px'>{myOrders.length}</span>
                       }
                     </div>
 
@@ -171,7 +173,7 @@ function Nav() {
 
                   {/* ==== popup profile ==== */}
                   {showInfo &&
-                    <div className={`absolute top-12 right-0 ${userData.role == "deliveryBoy" ? "md:right-[20%] lg:right-[40%]" : "md:right-[10%] lg:right-[25%]"}  w-[180px] bg-white shadow-2xl rounded-xl p-5 flex flex-col gap-2.5 z-9999 animate-[slideDown_0.5s_ease-out]`}>
+                    <div className={`absolute top-12 right-0 md:right-[10%] lg:right-[25%] w-[180px] bg-white shadow-2xl rounded-xl p-5 flex flex-col gap-2.5 z-9999 animate-[slideDown_0.5s_ease-out]`}>
 
                       <div className='text-[17px] font-semibold'>{userData.fullName}</div>
 
@@ -180,6 +182,8 @@ function Nav() {
                       {userData.role == "user" &&
                         <div className='md:hidden text-[#ff4d2d] font-semibold cursor-pointer' onClick={() => navigate("/my-orders")}>My Orders</div>
                       }
+
+                      {/* Log Out button */}
                       <div className='text-[#ff4d2d] font-semibold cursor-pointer' onClick={handleLogOut}>
                         Log Out
                       </div>
@@ -202,6 +206,12 @@ function Nav() {
           </>
         )}
         {/* ====== End 2. User Nav ======  */}
+
+        {/* ===== 4. Delivery Boy Nav ===== */}
+        {(userData && (userData.role === "deliveryBoy")) && (
+          <DeliveryBoyNav userData={userData} handleLogOut={handleLogOut} myOrders={myOrders}/>
+        )}
+        {/*  ===== End 4. Delivery Boy Nav ===== */}
 
       </>
       {/* ====== End User Based Nav ====== */}
