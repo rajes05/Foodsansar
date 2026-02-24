@@ -16,7 +16,7 @@ function MyOrders() {
   return (
     <div className='w-full min-h-screen bg-[#fff9f6] flex flex-col items-center justify-center'>
 
-      <div className='w-full max-w-[800px] p-4'>
+      <div className='grow w-full max-w-[800px] p-4'>
 
         {/* My Orders Header Div*/}
         <div className='flex items-center justify-center gap-5 mb-6 '>

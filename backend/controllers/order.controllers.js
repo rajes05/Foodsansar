@@ -428,9 +428,55 @@ export const verifyDeliveryOtp = async (req, res) => {
       assignedTo: shopOrder.assignedDeliveryBoy
     })
 
-    return res.status(200).json({ message: "order delivered sucessfully" })
+    return res.status(200).json({ message: "Order delivered sucessfully" })
 
   } catch (error) {
-    return res.status(500).json({ message: `verify delivery otp error ${error}` })
+    return res.status(500).json({ message: `Verify delivery otp error ${error}` })
   }
 };
+
+export const getTodayDeliveries = async(req, res) => {
+  try {
+    const deliveryBoyId = req.userId;
+    const startOfDay = new Date();
+    startOfDay.setHours(0,0,0,0)
+
+    const orders = await Order.find({
+      "shopOrders.assignedDeliveryBoy":deliveryBoyId,
+      "shopOrders.status":"delivered",
+      "shopOrders.deliveredAt":{$gte:startOfDay}
+    }).lean() //return plain js for fater performance
+
+    let todayDeliveries = [];
+
+    orders.forEach(order=>{
+      order.shopOrders.forEach(shopOrder=>{
+        if(shopOrder.assignedDeliveryBoy==deliveryBoyId && 
+          shopOrder.status == "delivered" &&
+          shopOrder.deliveredAt>=startOfDay
+        ){
+          todayDeliveries.push(shopOrder)
+        }
+      })
+    })
+
+    let stats = {}
+
+    todayDeliveries.forEach(shopOrder=>{
+      const hour = new Date(shopOrder.deliveredAt).getHours();
+      stats[hour]=(stats[hour] || 0) +1
+    })
+    
+    let formattedStats = Object.keys(stats).map(hour=>({
+      hour:parseInt(hour),
+      count:stats[hour]
+    }))
+
+    formattedStats.sort((a,b)=>a.hour-b.hour)
+
+    return res.status(200).json(formattedStats)
+
+  } catch (error) {
+    return res.status(500).json({message:`Today deliveries error ${error}`})
+  }
+}

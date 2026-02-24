@@ -16,6 +16,7 @@ import axios from 'axios';
 import { serverUrl } from '../App';
 import EsewaPaymentForm from '../components/EsewaPaymentForm';
 import RollBackButton from '../components/ui/RollBackButton';
+import Footer from '../components/Footer';
 
 function RecenterMap({ location }) {
   if (location.lat && location.lon) {
@@ -157,15 +158,14 @@ function CheckOut() {
   }
 
   return (
-    <div className='min-h-screen bg-[#fff9f6] flex items-center justify-center p-6'>
+    <div className='w-full min-h-screen bg-[#fff9f6] flex flex-col items-center justify-center gap-5'>
 
       {/* ===== Rollback Button ===== */}
-    
-      <RollBackButton to={-1}/>
-
+      <RollBackButton to={-1} />
       {/* ===== End Rollback Button ===== */}
 
-      <div className='w-full max-w-[900px] bg-white rounded-2xl shadow-xl p-6 space-y-6'>
+      {/* ===== Main ===== */}
+      <div className='grow w-full max-w-[900px] bg-white rounded-2xl shadow-xl p-6 space-y-6'>
         <h1 className='text-2xl font-bold text-gray-800'>Checkout</h1>
 
         {/* Set Delivery Location  */}
@@ -284,6 +284,11 @@ function CheckOut() {
         </button>
 
       </div>
+      {/* ===== End Main ===== */}
+
+      {/* ===== Footer ===== */}
+      <Footer />
+      {/* ===== End Footer ===== */}
 
     </div>
   )

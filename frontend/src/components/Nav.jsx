@@ -47,7 +47,7 @@ function Nav() {
 
         {/* ====== 1. Guenst User Nav ======  */}
         {userData === null && (
-          <GuestNav/>
+          <GuestNav />
         )}
         {/* ====== End 1. Guenst User Nav======  */}
 
@@ -64,6 +64,7 @@ function Nav() {
             </div>
             {/* ===== END OF LOGO =====  */}
 
+            {/* ===== Nav Items ===== */}
             <>
 
               {/* ===== popup search Bar ====== */}
@@ -105,24 +106,26 @@ function Nav() {
 
 
                     {/* My Orders for large devices */}
-
                     <div className='hidden md:flex items-center gap-2 cursor-pointer relative rounded-lg bg-[#ff4d2d]/10 text-[#ff4d2d] px-3 py-1 font-medium' onClick={() => navigate("/my-orders")}>
                       <LuReceipt size={20} />
                       <span>My Orders</span>
+                      {myOrders.length>0 && 
                       <span className='absolute -right-2 -top-2 text-xs fond-bold text-white bg-[#ff4d2d] rounded-full px-1.5 py-px'>{myOrders.length}</span>
+                      }
                     </div>
 
                     {/* My Orders for small devices */}
-
                     <div className='md:hidden flex items-center gap-2 cursor-pointer relative rounded-lg bg-[#ff4d2d]/10 text-[#ff4d2d] px-3 py-1 font-medium' onClick={() => navigate("/my-orders")}>
                       <LuReceipt size={20} />
+                      {myOrders.length>0 &&
                       <span className='absolute -right-2 -top-2 text-xs fond-bold text-white bg-[#ff4d2d] rounded-full px-1.5 py-px'>{myOrders.length}</span>
+                      }
                     </div>
+
                   </>
                 ) : (
 
-                  // for user
-
+                  // User
                   <>
 
                     {/* cart */}
@@ -155,6 +158,7 @@ function Nav() {
                     {/* End my orders for user */}
 
                   </>
+                  // End User
 
                 )}
 
@@ -192,16 +196,15 @@ function Nav() {
               {/* ===== end right nav section ===== */}
 
             </>
+            {/* ===== End Nav Items ===== */}
+
 
           </>
         )}
         {/* ====== End 2. User Nav ======  */}
 
       </>
-
-
-
-      {/* ====== User Based Nav ====== */}
+      {/* ====== End User Based Nav ====== */}
 
 
     </div>
