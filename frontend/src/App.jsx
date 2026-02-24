@@ -29,7 +29,7 @@ import LandingPage from './pages/LandingPage';
 import AboutUs from './pages/AboutUs';
 import SearchResults from './pages/SearchResults';
 
-export const serverUrl = "http://localhost:8000"; // Backend server URL
+export const serverUrl = import.meta.env.VITE_API_URL; // Backend server URL
 
 function App() {
   useGetCurrentUser(); //  Custom hook to fetch current user data
