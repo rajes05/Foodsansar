@@ -11,8 +11,8 @@
 > **FoodSansar** is a full-stack food ordering web application built using the MERN stack.  
 > It allows users to browse restaurants by city, explore food menus, add items to cart, and place secure orders online.
 
-🌐 **Live Demo:** (Add your deployed link here)  
-📂 **GitHub Repository:** (Add your repo link here)
+🌐 **Live Demo:** (https://foodsansar.vercel.app/)  
+📂 **GitHub Repository:** (https://github.com/rajes05/Foodsansar.git)
 
 ---
 
@@ -83,27 +83,6 @@ Cloudinary (Image Hosting)
 
 ---
 
-# 📦 API Endpoints
-
-## Auth Routes
-- POST `/api/auth/register`
-- POST `/api/auth/login`
-
-## Shop Routes
-- POST `/api/shop/create`
-- POST `/api/shop/edit/:shopId`
-- GET `/api/shop/:city`
-
-## Item Routes
-- POST `/api/item/add-item`
-- POST `/api/item/edit-item/:itemId`
-
-## Order Routes
-- POST `/api/order/create`
-- GET `/api/order/user-orders`
-
----
-
 # 📁 Project Structure
 
 ```
@@ -163,7 +142,8 @@ npm install
 Create a `.env` file in backend folder:
 
 ```
-PORT=5000
+PORT=your_dynamic_port
+WHITE_LISTED_ORIGINS=your_frontend_your
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_secret_key
 CLOUDINARY_CLOUD_NAME=your_cloud_name
@@ -188,26 +168,11 @@ Backend → http://localhost:5000
 
 # 📸 Screenshots
 
-Add your screenshots like this:
-
 ```
 ![Home Page](./screenshots/home.png)
 ![Shop Page](./screenshots/shop.png)
 ![Cart Page](./screenshots/cart.png)
 ```
-
----
-
-# 📊 What This Project Demonstrates
-
-- REST API Development
-- JWT Authentication System
-- File Upload Handling
-- Cloud Storage Integration
-- Full MERN Stack Integration
-- MVC Architecture
-- Production-ready Folder Structure
-
 ---
 
 # 🤝 Contributing
@@ -228,7 +193,7 @@ This project is licensed under the MIT License.
 
 <div align="center">
 
-## 👨‍💻 Developed by Raj  
+## 👨‍💻 Developed by Rajesh Rana  
 ⭐ Star this repository if you found it helpful!
 
 </div>
