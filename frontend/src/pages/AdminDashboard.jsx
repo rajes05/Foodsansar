@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { serverUrl } from '../App';
-import AdminNav from '../components/AdminNav';
 import { toast } from 'react-hot-toast';
 import { FaStore, FaBiking, FaCheckCircle, FaTimesCircle, FaHourglassHalf, FaUsers, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import Footer from '../components/Footer';
+import Nav from '../components/Nav';
 
 const AdminDashboard = () => {
     const [shops, setShops] = useState({ data: [], totalPages: 1, page: 1 });
@@ -74,6 +75,7 @@ const AdminDashboard = () => {
     // OR we could update the backend to return stats. 
     // Let's stick to simple "Pending Actions" based on current view for now, or just remove the subtext if inactive.
 
+    // ===== Stats Card =====
     const StatsCard = ({ title, value, icon, color }) => (
         <div className="bg-white rounded-xl shadow-md p-6 flex items-center space-x-4 border-l-4" style={{ borderColor: color }}>
             <div className={`p-3 rounded-full text-white`} style={{ backgroundColor: color }}>
@@ -85,7 +87,9 @@ const AdminDashboard = () => {
             </div>
         </div>
     );
+    // ===== End Stats Card =====
 
+    // ===== Pagination Card =====
     const PaginationControls = ({ metadata, onPageChange }) => (
         <div className="flex justify-between items-center px-6 py-4 border-t border-gray-100 bg-gray-50">
             <span className="text-sm text-gray-600">
@@ -109,7 +113,9 @@ const AdminDashboard = () => {
             </div>
         </div>
     );
+    // ===== End Pagination Card =====
 
+    // ===== User Table Card =====
     const UserTable = ({ data, type, metadata, onPageChange }) => (
         <div className="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-100">
             <div className="px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
@@ -135,7 +141,7 @@ const AdminDashboard = () => {
                             <tr key={user._id} className="hover:bg-gray-50 transition-colors duration-150">
                                 <td className="px-5 py-4 border-b border-gray-100 text-sm">
                                     <div className="flex items-center">
-                                        <div className="flex-shrink-0 w-10 h-10">
+                                        <div className="shrink-0 w-10 h-10">
                                             <div className="w-full h-full rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold text-lg">
                                                 {user.fullName.charAt(0).toUpperCase()}
                                             </div>
@@ -199,6 +205,8 @@ const AdminDashboard = () => {
             {metadata && onPageChange && <PaginationControls metadata={metadata} onPageChange={onPageChange} />}
         </div>
     );
+    // ===== End User Table Card =====
+
 
     if (loading) return (
         <div className="flex justify-center items-center h-screen bg-gray-50">
@@ -206,11 +214,16 @@ const AdminDashboard = () => {
         </div>
     );
 
+    // ===== Admin Dashboard =====
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
-            <AdminNav />
+        <div className="w-full min-h-screen bg-gray-50 flex flex-col font-sans">
 
-            <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
+            {/* ===== Nav ===== */}
+            <Nav/>
+            {/* ===== End Nav ===== */}
+
+            {/* ===== Main ===== */}
+            <main className="grow container mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
 
                 {/* Stats Overview */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
@@ -249,7 +262,7 @@ const AdminDashboard = () => {
                             className={`w-32 rounded-lg py-2.5 text-sm font-medium leading-5 transition-all outline-none
                                 ${activeTab === tab
                                     ? 'bg-white shadow text-blue-700'
-                                    : 'text-gray-600 hover:bg-white/[0.12] hover:text-blue-800'
+                                    : 'text-gray-600 hover:bg-white/12 hover:text-blue-800'
                                 }`}
                         >
                             {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -316,6 +329,12 @@ const AdminDashboard = () => {
                 </div>
 
             </main>
+            {/* ===== End  Main ===== */}
+
+            {/* ===== Footer ===== */}
+            <Footer />
+            {/* ===== End Footer ===== */}
+
         </div>
     );
 };

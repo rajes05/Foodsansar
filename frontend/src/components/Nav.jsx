@@ -12,6 +12,8 @@ import { useNavigate } from 'react-router-dom';
 import SearchBar from './composite/SearchBar';
 import GuestNav from './nav/GuestNav';
 import { DeliveryBoyNav } from './nav/DeliveryBoyNav';
+import AdminNav from './nav/AdminNav';
+import toast from 'react-hot-toast';
 
 
 function Nav() {
@@ -31,11 +33,12 @@ function Nav() {
       const result = await axios.get(`${serverUrl}/api/auth/signout`, { withCredentials: true });
 
       // removes the stored user information from the Redux state
-
       dispatch(setUserData(null));
+      toast.success("Logged Out Sucessfully!");
 
     } catch (error) {
       console.log(error);
+      toast.error("Logout Failed!");
     }
   }
 
@@ -136,7 +139,7 @@ function Nav() {
 
                         <FiShoppingCart size={25} className='text-[#ff4d2d]' />
                         {cartItems.length > 0 && (
-                          <span className='absolute right-[-9px] -top-3 text-[#ff4d2d]'>
+                          <span className='absolute -right-2.25 -top-3 text-[#ff4d2d]'>
                             {cartItems.length}
                           </span>
                         )
@@ -173,7 +176,7 @@ function Nav() {
 
                   {/* ==== popup profile ==== */}
                   {showInfo &&
-                    <div className={`absolute top-12 right-0 md:right-[10%] lg:right-[25%] w-[180px] bg-white shadow-2xl rounded-xl p-5 flex flex-col gap-2.5 z-9999 animate-[slideDown_0.5s_ease-out]`}>
+                    <div className={`absolute top-12 right-0 md:right-[10%] lg:right-[25%] w-45 bg-white shadow-2xl rounded-xl p-5 flex flex-col gap-2.5 z-9999 animate-[slideDown_0.5s_ease-out]`}>
 
                       <div className='text-[17px] font-semibold'>{userData.fullName}</div>
 
@@ -212,6 +215,12 @@ function Nav() {
           <DeliveryBoyNav userData={userData} handleLogOut={handleLogOut} myOrders={myOrders}/>
         )}
         {/*  ===== End 4. Delivery Boy Nav ===== */}
+
+        {/* ===== 5. Admin Nav ===== */}
+        {(userData && (userData.role === "ADMIN")) && (
+          <AdminNav userData={userData} handleLogOut={handleLogOut}/>
+        )}
+        {/* ===== End 5. Admin Nav ===== */}
 
       </>
       {/* ====== End User Based Nav ====== */}
