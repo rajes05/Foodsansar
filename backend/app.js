@@ -15,43 +15,39 @@ import adminRouter from "./routes/admin.routes.js";
 const app = express(); // initializes the Express application
 const allowedOrigins = process.env.WHITE_LISTED_ORIGINS?.split(",") || [];
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      // allow requests with no origin (Postman, server-to-server)
-      if (!origin) return callback(null, true);
+const corsOptions = {
+  origin: function (origin, callback) {
+    // allow requests with no origin (Postman, server-to-server)
+    if (!origin) return callback(null, true);
 
-      // allow if origin is in whitelist
-      if (allowedOrigins.includes(origin)) return callback(null, true);
+    // allow if origin is in whitelist
+    if (allowedOrigins.includes(origin)) return callback(null, true);
 
-      // allow localhost automatically in development
-      if (
-        process.env.NODE_ENV !== "production" &&
-        origin.startsWith("http://localhost")
-      ) {
-        return callback(null, true);
-      }
+    // allow localhost automatically in development
+    if (
+      process.env.NODE_ENV !== "production" &&
+      origin.startsWith("http://localhost")
+    ) {
+      return callback(null, true);
+    }
 
-      // Allow ALL vercel preview deployments
-      if (origin.endsWith(".vercel.app")) {
-        return callback(null, true);
-      }
+    // Allow ALL vercel preview deployments
+    if (origin.endsWith(".vercel.app")) {
+      return callback(null, true);
+    }
 
-      // reject everything else
-      return callback(new Error(`CORS Error: Origin ${origin} is not allowed`));
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    preflightContinue:true, // make sure OPTIONS requests aren't blocked
-  }),
-);
+    // reject everything else
+    return callback(new Error(`CORS Error: Origin ${origin} is not allowed`));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors(corsOptions));
 
 // Handle preflight for all routes
-app.options("*", cors({
-    origin: allowedOrigins,
-    credentials: true,
-}));
+app.options("*", cors(corsOptions));
 
 app.use(express.json()); // middleware to read req.body as JSON
 app.use(cookieParser()); // middleware to parse cookies from incoming requests
