@@ -47,7 +47,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // Handle preflight for all routes
-app.options("*", cors(corsOptions));
+app.options(/(.*)/, cors(corsOptions));
 
 app.use(express.json()); // middleware to read req.body as JSON
 app.use(cookieParser()); // middleware to parse cookies from incoming requests
@@ -56,7 +56,7 @@ app.use(cookieParser()); // middleware to parse cookies from incoming requests
 app.get("/health", (req, res) => {
   res.json({
     status: "OK",
-    message: "FoodSansar s running",
+    message: "FoodSansar is running",
   });
 });
 
