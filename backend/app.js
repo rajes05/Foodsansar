@@ -43,8 +43,15 @@ app.use(
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    preflightContinue:true, // make sure OPTIONS requests aren't blocked
   }),
 );
+
+// Handle preflight for all routes
+app.options("*", cors({
+    origin: allowedOrigins,
+    credentials: true,
+}));
 
 app.use(express.json()); // middleware to read req.body as JSON
 app.use(cookieParser()); // middleware to parse cookies from incoming requests
