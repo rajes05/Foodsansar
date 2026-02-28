@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer'; // Import nodemailer for sending emails
-import dotenv from 'dotenv'; // Import dotenv to manage environment variables
+import dotenv from 'dotenv';
+dotenv.config();
 
 // Function to send an email
 const transporter = nodemailer.createTransport({
