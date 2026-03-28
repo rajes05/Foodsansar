@@ -165,10 +165,10 @@ function CheckOut() {
       {/* ===== End Rollback Button ===== */}
 
       {/* ===== Main ===== */}
-      <div className='grow w-full max-w-[900px] bg-white rounded-2xl shadow-xl p-6 space-y-6'>
+      <div className='grow w-full max-w-225 bg-white rounded-2xl shadow-xl p-6 space-y-6'>
         <h1 className='text-2xl font-bold text-gray-800'>Checkout</h1>
 
-        {/* Set Delivery Location  */}
+        {/* === Set Delivery Location === */}
         <section>
 
           <h2 className='text-lg font-semibold mb-2 flex items-center gap-2 text-gray-800'>
@@ -179,10 +179,10 @@ function CheckOut() {
           {/* SearchInput and current location  */}
           <div className='flex gap-2 mb-3'>
             <input type="text" className='flex-1 border border-gray-300 rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ff4d2d]' placeholder='Enter Your Delivery Address..' value={addressInput} onChange={(e) => setAddressInput(e.target.value)} />
-            <button className='bg-[#ff4d2d] hover:bg-[#e64526] text-white px-3 py-2 rounded-lg flex items-center justify-center' onClick={getLatLngByAddress}>
+            <button className='cursor-pointer bg-[#ff4d2d] hover:bg-[#e64526] text-white px-3 py-2 rounded-lg flex items-center justify-center' onClick={getLatLngByAddress}>
               <IoSearchOutline size={17} />
             </button>
-            <button className='bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg flex items-center justify-center' onClick={getCurrentLocation}>
+            <button className='cursor-pointer bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg flex items-center justify-center' onClick={getCurrentLocation}>
               <TbCurrentLocation size={17} />
             </button>
           </div>
@@ -203,6 +203,8 @@ function CheckOut() {
           {/* *End map  */}
 
         </section>
+        {/* === End Set Delivery Location === */}
+
 
         {/* set Payment Method  */}
         <section>
@@ -210,7 +212,7 @@ function CheckOut() {
           <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
 
             {/* cod  */}
-            <div className={`flex items-center gap-3 rounded-xl border p-4 text-left transition ${paymentMethod === "cod" ? "border-[#ff4d2d] bg-orange-50" : "border-gray-200 hover:border-gray-300"}`} onClick={() => setPaymentMethod("cod")}>
+            <div className={`cursor-pointer flex items-center gap-3 rounded-xl border p-4 text-left transition ${paymentMethod === "cod" ? "border-[#ff4d2d] bg-orange-50" : "border-gray-200 hover:border-gray-300"}`} onClick={() => setPaymentMethod("cod")}>
               <span className='inline-flex h-10 w-10 items-center justify-center rounded-full bg-green-100'>
                 <MdDeliveryDining className='text-green-600 text-xl' />
               </span>
@@ -222,7 +224,7 @@ function CheckOut() {
             </div>
 
             {/* online  */}
-            <div className={`flex items-center gap-3 rounded-xl border p-4 text-left transition ${paymentMethod === "online" ? "border-[#ff4d2d] bg-orange-50" : "border-gray-200 hover:border-gray-300"}`} onClick={() => setPaymentMethod("online")}>
+            <div className={`cursor-pointer flex items-center gap-3 rounded-xl border p-4 text-left transition ${paymentMethod === "online" ? "border-[#ff4d2d] bg-orange-50" : "border-gray-200 hover:border-gray-300"}`} onClick={() => setPaymentMethod("online")}>
               <span className='inline-flex h-10 w-10 items-center justify-center rounded-full bg-purple-100'>
                 <FaMobileScreenButton className='text-purple-700 text-lg' />
               </span>
@@ -276,7 +278,7 @@ function CheckOut() {
 
         {/* Place Order Button  */}
         <button
-          className='w-full bg-[#ff4d2d] hover:bg-[#e64526] text-white py-3 rounded-xl font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed'
+          className='cursor-pointer w-full bg-[#ff4d2d] hover:bg-[#e64526] text-white py-3 rounded-xl font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed'
           onClick={handlePlaceOrder}
           disabled={isProcessing}
         >
