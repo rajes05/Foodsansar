@@ -35,7 +35,7 @@ function CheckOut() {
   const [paymentMethod, setPaymentMethod] = useState("cod");
   const [esewaPaymentData, setEsewaPaymentData] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [showEPayModal, setShowEPayModal] = useState(false); // 👈 modal state
+  const [showEPayModal, setShowEPayModal] = useState(false); // Modal State
 
   const dispatch = useDispatch();
   const apiKey = import.meta.env.VITE_GEOAPIKEY;
@@ -119,10 +119,19 @@ function CheckOut() {
           }
 
         } else if (walletId === 'khalti') {
-          // 👇 Add your Khalti initiation logic here
-          // const paymentResult = await axios.post(`${serverUrl}/api/payment/khalti/initiate`, { orderId: order._id }, { withCredentials: true });
-          alert("Khalti integration coming soon!");
-          setIsProcessing(false);
+          const paymentResult = await axios.post(
+            `${serverUrl}/api/payment/khalti/initiate`,
+            { orderId: order._id },
+            { withCredentials: true }
+          );
+
+          if (paymentResult.data.success) {
+            // Redirect the browser to Khalti's hosted payment page
+            window.location.href = paymentResult.data.payment_url;
+          } else {
+            alert("Failed to initiate Khalti payment. Please try again.");
+            setIsProcessing(false);
+          }
         }
       }
 

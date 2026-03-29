@@ -81,6 +81,10 @@ const orderSchema = new mongoose.Schema(
         type: String,
         default: null
       },
+      khaltiRefId: {
+        type: String,
+        default: null
+      },
       paidAt: {
         type: Date,
         default: null

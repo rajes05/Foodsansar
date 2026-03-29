@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import Order from "../models/order.model.js";
+import axios from "axios";
 
 // eSewa configuration
 const ESEWA_MERCHANT_CODE = process.env.ESEWA_MERCHANT_CODE;
@@ -118,5 +119,106 @@ export const verifyEsewaPayment = async (req, res) => {
     } catch (error) {
         console.error("Verify eSewa payment error:", error);
         return res.redirect(`${process.env.FRONTEND_URL}/payment-failure?error=${encodeURIComponent(error.message)}`);
+    }
+};
+
+// Khalti configuration
+export const initiateKhaltiPayment = async (req, res) => {
+    try {
+        const { orderId } = req.body;
+
+        const order = await Order.findById(orderId);
+        if (!order) {
+            return res.status(404).json({ message: "Order not found" });
+        }
+        if (order.user.toString() !== req.userId) {
+            return res.status(403).json({ message: "Unauthorized access to order" });
+        }
+        if (order.paymentMethod !== "online") {
+            return res.status(400).json({ message: "Order payment method is not online" });
+        }
+
+        const transactionUuid = crypto.randomUUID();
+
+        // Save transactionId so we can look up the order on verify
+        order.payment.transactionId = transactionUuid;
+        order.markModified("payment");
+        await order.save();
+
+        const payload = {
+            return_url: `${process.env.BACKEND_URL}/api/payment/khalti/verify`,
+            website_url: process.env.FRONTEND_URL,
+            amount: order.totalAmount * 100,              // Khalti works in paisa (Rs 1 = 100 paisa)
+            purchase_order_id: transactionUuid,           // we use this to find the order later
+            purchase_order_name: `FoodSansar Order`,
+        };
+
+        const khaltiResponse = await axios.post(
+            process.env.KHALTI_INITIATE_URL,
+            payload,
+            {
+                headers: {
+                    Authorization: `Key ${process.env.KHALTI_SECRET_KEY}`,
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+
+        return res.status(200).json({
+            success: true,
+            payment_url: khaltiResponse.data.payment_url,   // frontend redirects user here
+        });
+
+    } catch (error) {
+        console.error("Initiate Khalti payment error:", error.response?.data || error);
+        return res.status(500).json({ message: `Initiate payment error: ${error.message}` });
+    }
+};
+
+export const verifyKhaltiPayment = async (req, res) => {
+    try {
+        // Khalti sends these as query params to return_url
+        const { pidx, transaction_id, amount, purchase_order_id, status } = req.query;
+
+        // Quick status check before hitting the lookup API
+        if (status !== "Completed") {
+            return res.redirect(`${process.env.FRONTEND_URL}/payment-failure`);
+        }
+
+        // Always verify with Khalti's lookup API — never trust query params alone
+        const lookupResponse = await axios.post(
+            process.env.KHALTI_LOOKUP_URL,
+            { pidx },
+            {
+                headers: {
+                    Authorization: `Key ${process.env.KHALTI_SECRET_KEY}`,
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+
+        if (lookupResponse.data.status !== "Completed") {
+            return res.redirect(`${process.env.FRONTEND_URL}/payment-failure`);
+        }
+
+        // Find order by the transactionId we saved during initiate
+        const order = await Order.findOne({ "payment.transactionId": purchase_order_id });
+        if (!order) {
+            return res.status(404).json({ message: "Order not found" });
+        }
+
+        order.payment.status = "completed";
+        order.payment.khaltiRefId = transaction_id;
+        order.payment.paidAt = new Date();
+        order.markModified("payment");
+        await order.save();
+
+        return res.redirect(`${process.env.FRONTEND_URL}/order-placed?orderId=${order._id}`);
+
+    } catch (error) {
+        console.error("Verify Khalti payment error:", error.response?.data || error);
+        return res.redirect(
+            `${process.env.FRONTEND_URL}/payment-failure?error=${encodeURIComponent(error.message)}`
+        );
     }
 };
