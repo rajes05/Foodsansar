@@ -7,6 +7,7 @@ import { FaLocationDot } from "react-icons/fa6";
 import { FaUtensils } from "react-icons/fa";
 import FoodCard from '../components/FoodCard';
 import { FaArrowLeft } from "react-icons/fa";
+import Footer from '../components/Footer';
 
 
 
@@ -31,7 +32,7 @@ function Shop() {
     }, [shopId])
 
     return (
-        <div className='min-h-screen bg-gray-50'>
+        <div className='min-h-screen bg-gray-50 flex flex-col'>
 
             {/* Back Button */}
             <button className='absolute top-4 left-4 z-20 flex items-center gap-2 bg-black/50 hover:bg-black/70 text-white px-3 py-2 rounded-full shadow transition' onClick={()=>navigate("/")}>
@@ -54,16 +55,13 @@ function Shop() {
                             <p className='text-lg font-medium text-gray-200 mt-2.5'>
                                 {shop.address}
                             </p>
-                            {/* <p className='text-lg font-medium text-gray-200 mt-2.5'>
-                                {shop.owner.mobile}
-                            </p> */}
                         </div>
                     </div>
 
                 </div>}
 
              {/* Shop Menu  */}
-             <div className='max-w-7xl mx-auto px-6 py-10'>
+             <div className='flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10'>
                     <h2 className='flex items-center justify-center gap-3 text-3xl font-bold mb-10 text-gray-800'>
                         <FaUtensils color='red'/>
                         Our Menu
@@ -79,6 +77,8 @@ function Shop() {
                     ): <p className='text-center text-gray-500 text-lg'>No Items Available</p> }
 
              </div>
+
+            <Footer/>
 
         </div>
     )
