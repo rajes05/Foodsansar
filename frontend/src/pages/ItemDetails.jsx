@@ -982,7 +982,7 @@ function ItemDetails() {
                                 <CategoryIcon size={10} /> {item.category}
                             </span>
                             {/* Algorithm badges legend */}
-                            <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
+                            {/* <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
                                 {Object.entries(BADGE_CONFIG).map(([label, cfg]) => (
                                     <span key={label} style={{
                                         background: cfg.bg, color: cfg.color,
@@ -993,7 +993,7 @@ function ItemDetails() {
                                         {label}
                                     </span>
                                 ))}
-                            </div>
+                            </div> */}
                         </div>
                         <button
                             style={{
