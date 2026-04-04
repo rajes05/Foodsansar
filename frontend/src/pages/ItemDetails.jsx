@@ -201,6 +201,21 @@ function ItemDetails() {
         }
     };
 
+    const handleBuyNow = () => {
+        if (quantity > 0) {
+            dispatch(addToCart({
+                id: item._id,
+                name: item.name,
+                price: item.price,
+                image: item.image,
+                shop: item.shop,
+                quantity,
+                foodType: item.foodType,
+            }));
+            navigate("/checkout");
+        }
+    };
+
     const avgRating = item?.rating?.average || 0;
     const reviewCount = item?.rating?.count || 0;
     const isInCart = cartItems.some((i) => i.id === item?._id);
@@ -766,7 +781,7 @@ function ItemDetails() {
                             <FaShoppingCart size={15} />
                             {isInCart ? "✓ Added to Cart" : "Add to Cart"}
                         </button>
-                        <button className="btn-secondary" style={{ width: "100%" }} onClick={handleAddToCart}>
+                        <button className="btn-secondary" style={{ width: "100%" }} onClick={handleBuyNow}>
                             <FaBolt size={13} /> Buy Now
                         </button>
 
