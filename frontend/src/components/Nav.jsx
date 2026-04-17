@@ -181,9 +181,13 @@ function Nav() {
                       <div className='text-[17px] font-semibold'>{userData.fullName}</div>
 
                       {/* Show 'My Orders' when role=user */}
-
                       {userData.role == "user" &&
                         <div className='md:hidden text-[#ff4d2d] font-semibold cursor-pointer' onClick={() => navigate("/my-orders")}>My Orders</div>
+                      }
+
+                      {/* Show 'Shops' when role=user */}
+                      {userData.role == "user" &&
+                        <div className='text-[#ff4d2d] font-semibold cursor-pointer text-nowrap' onClick={() => { navigate("/shops"); setShowInfo(false); }}>Shops</div>
                       }
 
                       {/* Log Out button */}

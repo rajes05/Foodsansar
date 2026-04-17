@@ -105,3 +105,20 @@ export const getShopByCity = async (req, res) => {
     }
 };
 
+
+export const getAllShops = async (req, res) => {
+    try {
+        const shops = await Shop.find().populate("items").populate("owner");
+
+        if (!shops) {
+            return res.status(400).json({ message: "Shops not found" });
+        }
+
+        // Filter shops where owner status is APPROVED
+        const approvedShops = shops.filter(shop => shop.owner && shop.owner.status === "APPROVED");
+
+        return res.status(200).json(approvedShops);
+    } catch (error) {
+        return res.status(500).json({ message: `Get All Shops error ${error}` });
+    }
+};
